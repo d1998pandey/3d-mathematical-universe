@@ -8,17 +8,17 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <style>
   :root {
-    --bg-dark: #070a10;
+    --bg-dark: #060911;
     --panel-bg: #0f1420;
     --panel-border: #242f46;
     --text-main: #f1f5f9;
     --text-muted: #94a3b8;
-    --accent: #38bdf8;
-    --accent-hover: #0284c7;
+    --accent: #00d2ff;
+    --accent-hover: #38bdf8;
     --accent-sec: #a855f7;
-    --success: #10b981;
-    --danger: #ef4444;
-    --warning: #f59e0b;
+    --success: #00f59b;
+    --danger: #ff4d6d;
+    --warning: #ffb703;
     --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
@@ -60,8 +60,8 @@
   }
   .mode-tabs {
     display: flex;
-    gap: 6px;
-    background: #070a10;
+    gap: 5px;
+    background: #070a12;
     padding: 4px;
     border-radius: 8px;
     border: 1px solid var(--panel-border);
@@ -70,7 +70,7 @@
     background: transparent;
     border: none;
     color: var(--text-muted);
-    padding: 6px 12px;
+    padding: 6px 11px;
     border-radius: 6px;
     font-size: 12px;
     font-weight: 600;
@@ -80,28 +80,30 @@
   .mode-tab:hover { color: var(--text-main); }
   .mode-tab.active {
     background: var(--accent);
-    color: #04070d;
+    color: #040811;
   }
   .header-actions {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
   }
   .btn-sm {
-    background: #172033;
+    background: #171f30;
     border: 1px solid var(--panel-border);
     color: var(--text-main);
     padding: 5px 10px;
     border-radius: 6px;
     font-size: 12px;
+    font-weight: 500;
     cursor: pointer;
     transition: 0.15s;
   }
   .btn-sm:hover { border-color: var(--accent); color: var(--accent); }
   .btn-sm.active-toggle {
-    background: rgba(56, 189, 248, 0.2);
+    background: rgba(0, 210, 255, 0.2);
     border-color: var(--accent);
-    color: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
   }
 
   .app-body {
@@ -111,9 +113,9 @@
     position: relative;
   }
   .sidebar {
-    width: 390px;
+    width: 385px;
     min-width: 340px;
-    max-width: 440px;
+    max-width: 430px;
     background: var(--panel-bg);
     border-right: 1px solid var(--panel-border);
     display: flex;
@@ -122,10 +124,10 @@
     z-index: 10;
   }
   .sidebar::-webkit-scrollbar { width: 6px; }
-  .sidebar::-webkit-scrollbar-thumb { background: #283044; border-radius: 3px; }
+  .sidebar::-webkit-scrollbar-thumb { background: #28334a; border-radius: 3px; }
 
   .panel-section {
-    padding: 14px 16px;
+    padding: 13px 16px;
     border-bottom: 1px solid var(--panel-border);
   }
   .section-title {
@@ -134,7 +136,7 @@
     letter-spacing: 0.8px;
     color: var(--text-muted);
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 9px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -152,7 +154,7 @@
   }
   .eq-input {
     flex: 1;
-    background: #06090f;
+    background: #070a10;
     border: 1px solid #2e3b56;
     color: #fff;
     padding: 9px 11px;
@@ -162,19 +164,19 @@
     outline: none;
     transition: border 0.15s;
   }
-  .eq-input:focus { border-color: var(--accent); box-shadow: 0 0 8px rgba(56, 189, 248, 0.25); }
+  .eq-input:focus { border-color: var(--accent); box-shadow: 0 0 8px rgba(0, 210, 255, 0.25); }
   .btn-plot {
     background: var(--accent);
-    color: #04070d;
+    color: #040811;
     border: none;
-    padding: 9px 14px;
+    padding: 9px 15px;
     border-radius: 6px;
     font-weight: 700;
     font-size: 13px;
     cursor: pointer;
     transition: background 0.15s;
   }
-  .btn-plot:hover { background: #7dd3fc; }
+  .btn-plot:hover { background: #5ce1ff; }
 
   .math-keys {
     display: flex;
@@ -183,8 +185,8 @@
     margin-top: 4px;
   }
   .math-key {
-    background: #182032;
-    border: 1px solid #2a3752;
+    background: #172033;
+    border: 1px solid #283652;
     color: var(--text-main);
     font-family: var(--font-mono);
     font-size: 11.5px;
@@ -192,13 +194,13 @@
     border-radius: 4px;
     cursor: pointer;
   }
-  .math-key:hover { background: #25334d; border-color: var(--accent); }
+  .math-key:hover { background: #24324d; border-color: var(--accent); }
 
   .error-box {
     display: none;
-    background: rgba(239, 68, 68, 0.16);
+    background: rgba(255, 77, 109, 0.14);
     border: 1px solid var(--danger);
-    color: #fca5a5;
+    color: #fda4af;
     padding: 8px 10px;
     border-radius: 6px;
     font-size: 12px;
@@ -208,11 +210,11 @@
   .detected-badge {
     display: inline-block;
     font-size: 10.5px;
-    padding: 2px 7px;
+    padding: 2px 8px;
     border-radius: 10px;
-    background: rgba(168, 85, 247, 0.2);
-    color: #e9d5ff;
-    border: 1px solid rgba(168, 85, 247, 0.45);
+    background: rgba(0, 210, 255, 0.15);
+    color: #7dd3fc;
+    border: 1px solid rgba(0, 210, 255, 0.4);
   }
 
   .control-grid {
@@ -234,8 +236,8 @@
   }
   .control-item input[type="number"],
   .control-item select {
-    background: #080b12;
-    border: 1px solid #2b3750;
+    background: #070a10;
+    border: 1px solid #2b3853;
     color: var(--text-main);
     padding: 5px 7px;
     border-radius: 4px;
@@ -280,8 +282,8 @@
 
   .lib-search {
     width: 100%;
-    background: #06090f;
-    border: 1px solid #2b3750;
+    background: #070a10;
+    border: 1px solid #2b3853;
     color: var(--text-main);
     padding: 6px 10px;
     border-radius: 5px;
@@ -290,8 +292,8 @@
   }
   .lib-cat-select {
     width: 100%;
-    background: #151d2e;
-    border: 1px solid #2b3750;
+    background: #141c2c;
+    border: 1px solid #2b3853;
     color: var(--text-main);
     padding: 6px 8px;
     border-radius: 5px;
@@ -299,7 +301,7 @@
     margin-bottom: 8px;
   }
   .lib-list {
-    max-height: 175px;
+    max-height: 170px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -319,7 +321,7 @@
   }
   .lib-item:hover {
     border-color: var(--accent);
-    background: #1c263b;
+    background: #1a253a;
   }
   .lib-item code {
     font-family: var(--font-mono);
@@ -328,13 +330,13 @@
   }
 
   .explanation-box {
-    background: #0a0f18;
-    border: 1px solid #253149;
+    background: #0a0e17;
+    border: 1px solid #243048;
     border-radius: 6px;
     padding: 10px 12px;
     font-size: 12.5px;
     line-height: 1.5;
-    color: #d8e2f0;
+    color: #dbe4f0;
   }
   .explanation-box h4 {
     color: var(--accent);
@@ -344,17 +346,17 @@
   .explanation-box .math-stat {
     margin-top: 6px;
     padding-top: 6px;
-    border-top: 1px dashed #26324a;
+    border-top: 1px dashed #283550;
     font-family: var(--font-mono);
     font-size: 11.5px;
-    color: #a5f3fc;
+    color: #7dd3fc;
   }
 
-  /* Vibrant Central 3D Workspace */
+  /* Central 3D/2D Workspace */
   .workspace {
     flex: 1;
     position: relative;
-    background: radial-gradient(circle at center, #131c31 0%, #070b14 100%);
+    background: radial-gradient(circle at center, #0e1525 0%, #060911 100%);
     overflow: hidden;
   }
   #canvas-container {
@@ -368,18 +370,42 @@
     right: 12px;
     display: flex;
     gap: 6px;
-    background: rgba(15, 20, 32, 0.9);
+    background: rgba(15, 20, 32, 0.92);
     backdrop-filter: blur(8px);
     padding: 6px 8px;
     border-radius: 8px;
     border: 1px solid var(--panel-border);
     z-index: 5;
+    align-items: center;
   }
+  .dim-switch {
+    display: flex;
+    background: #070a12;
+    padding: 2px;
+    border-radius: 6px;
+    border: 1px solid #2b3954;
+    margin-right: 6px;
+  }
+  .dim-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .dim-btn.active {
+    background: var(--success);
+    color: #04100b;
+  }
+
   .legend-overlay {
     position: absolute;
     top: 12px;
     left: 12px;
-    background: rgba(15, 20, 32, 0.9);
+    background: rgba(15, 20, 32, 0.92);
     backdrop-filter: blur(8px);
     padding: 10px 14px;
     border-radius: 8px;
@@ -402,23 +428,22 @@
     height: 12px;
     border-radius: 3px;
     flex-shrink: 0;
-    box-shadow: 0 0 6px currentColor;
   }
 
   .probe-overlay {
     position: absolute;
     bottom: 14px;
     left: 14px;
-    background: rgba(10, 15, 25, 0.94);
+    background: rgba(10, 14, 23, 0.94);
     border: 1px solid var(--accent);
-    box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
-    padding: 8px 12px;
+    padding: 8px 13px;
     border-radius: 6px;
     font-family: var(--font-mono);
     font-size: 12px;
     color: #f8fafc;
     z-index: 5;
     pointer-events: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
   }
 
   .anim-bar {
@@ -448,7 +473,7 @@
     bottom: 68px;
     right: 14px;
     width: 340px;
-    background: rgba(15, 22, 36, 0.96);
+    background: rgba(15, 21, 35, 0.96);
     border: 1px solid var(--accent-sec);
     border-radius: 8px;
     padding: 12px 14px;
@@ -470,7 +495,7 @@
   }
   .guided-answer {
     display: none;
-    background: rgba(16, 185, 129, 0.14);
+    background: rgba(0, 245, 155, 0.12);
     border: 1px solid var(--success);
     color: #a7f3d0;
     padding: 7px 9px;
@@ -517,7 +542,7 @@
 
       <div id="standard-input-panel" class="eq-input-group">
         <div class="input-row">
-          <input type="text" id="eq-main" class="eq-input" value="z = x² + y²" placeholder="e.g. z = x^2 + y^2 or y = x^2" oninput="onEquationInputChange()">
+          <input type="text" id="eq-main" class="eq-input" value="y = x²" placeholder="e.g. y = x^2 or z = x^2 + y^2" oninput="onEquationInputChange()">
           <button class="btn-plot" onclick="evaluateAndPlot()">Plot</button>
         </div>
 
@@ -527,7 +552,7 @@
           </label>
         </div>
         <div id="compare-input-row" class="input-row" style="display:none;">
-          <input type="text" id="eq-compare" class="eq-input" value="z = x² - y²" placeholder="Second equation (e.g. z = x^2 - y^2)" oninput="onEquationInputChange()">
+          <input type="text" id="eq-compare" class="eq-input" value="y = 2*x + 1" placeholder="Second equation (e.g. y = 2x + 1)" oninput="onEquationInputChange()">
         </div>
 
         <div class="checkbox-row" style="margin-top:2px;">
@@ -535,7 +560,7 @@
             <input type="checkbox" id="chk-piecewise" onchange="togglePiecewisePanel()"> Piecewise Function Mode
           </label>
         </div>
-        <div id="piecewise-panel" style="display:none; background:#090c14; padding:8px; border-radius:6px; border:1px solid #242e42; margin-top:4px;">
+        <div id="piecewise-panel" style="display:none; background:#080b12; padding:8px; border-radius:6px; border:1px solid #242e42; margin-top:4px;">
           <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Piece 1 (for x &lt; threshold):</div>
           <input type="text" id="pw-expr1" class="eq-input" value="x^2" style="width:100%; margin-bottom:6px;" oninput="updatePiecewiseEquation()">
           <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Piece 2 (for x &ge; threshold):</div>
@@ -570,6 +595,7 @@
         <button class="btn-plot" onclick="evaluateAndPlot()">Plot Parametric Structure</button>
       </div>
 
+      <!-- Quick Symbol Insertion Bar -->
       <div class="math-keys">
         <button class="math-key" onclick="insertSymbol('²')">x²</button>
         <button class="math-key" onclick="insertSymbol('³')">x³</button>
@@ -613,11 +639,11 @@
         </div>
         <div class="slider-row">
           <div class="slider-header"><span>Slice x₀</span><span class="val" id="lbl-slice-x">0.0</span></div>
-          <input type="range" id="rng-slice-x" min="-6" max="6" step="0.1" value="0" oninput="onSliceChange()">
+          <input type="range" id="rng-slice-x" min="-8" max="8" step="0.1" value="0" oninput="onSliceChange()">
         </div>
         <div class="slider-row">
           <div class="slider-header"><span>Slice y₀</span><span class="val" id="lbl-slice-y">0.0</span></div>
-          <input type="range" id="rng-slice-y" min="-6" max="6" step="0.1" value="0" oninput="onSliceChange()">
+          <input type="range" id="rng-slice-y" min="-8" max="8" step="0.1" value="0" oninput="onSliceChange()">
         </div>
       </div>
 
@@ -633,12 +659,12 @@
         </div>
         <div id="calc-point-sliders">
           <div class="slider-row">
-            <div class="slider-header"><span>Probe Point x₀</span><span class="val" id="lbl-calc-x">1.0</span></div>
-            <input type="range" id="rng-calc-x" min="-6" max="6" step="0.05" value="1.0" oninput="onCalcPointChange()">
+            <div class="slider-header"><span>Probe Point x₀</span><span class="val" id="lbl-calc-x">1.00</span></div>
+            <input type="range" id="rng-calc-x" min="-8" max="8" step="0.05" value="1.0" oninput="onCalcPointChange()">
           </div>
           <div class="slider-row" id="calc-y0-row">
-            <div class="slider-header"><span>Probe Point / IC y₀</span><span class="val" id="lbl-calc-y">1.0</span></div>
-            <input type="range" id="rng-calc-y" min="-6" max="6" step="0.05" value="1.0" oninput="onCalcPointChange()">
+            <div class="slider-header"><span>Probe Point / IC y₀</span><span class="val" id="lbl-calc-y">1.00</span></div>
+            <input type="range" id="rng-calc-y" min="-8" max="8" step="0.05" value="1.0" oninput="onCalcPointChange()">
           </div>
         </div>
         <div class="checkbox-row">
@@ -650,11 +676,11 @@
       <div id="ctx-integral" style="display:none;">
         <div class="slider-row">
           <div class="slider-header"><span>Lower Limit a</span><span class="val" id="lbl-int-a">-2.0</span></div>
-          <input type="range" id="rng-int-a" min="-6" max="6" step="0.1" value="-2.0" oninput="onIntegralChange()">
+          <input type="range" id="rng-int-a" min="-8" max="8" step="0.1" value="-2.0" oninput="onIntegralChange()">
         </div>
         <div class="slider-row">
           <div class="slider-header"><span>Upper Limit b (Accumulation)</span><span class="val" id="lbl-int-b">2.0</span></div>
-          <input type="range" id="rng-int-b" min="-6" max="6" step="0.1" value="2.0" oninput="onIntegralChange()">
+          <input type="range" id="rng-int-b" min="-8" max="8" step="0.1" value="2.0" oninput="onIntegralChange()">
         </div>
         <div class="slider-row" id="int-y-limits">
           <div class="slider-header"><span>2D Integration y-range [-c, c]</span><span class="val" id="lbl-int-c">2.0</span></div>
@@ -664,7 +690,7 @@
 
       <div id="ctx-parametric" style="display:none;">
         <div class="slider-row">
-          <div class="slider-header"><span>Active Parameter t₀ (Position Vector)</span><span class="val" id="lbl-param-t0">1.5</span></div>
+          <div class="slider-header"><span>Active Parameter t₀ (Position Vector)</span><span class="val" id="lbl-param-t0">1.50</span></div>
           <input type="range" id="rng-param-t0" min="-6.28" max="6.28" step="0.05" value="1.5" oninput="onParamT0Change()">
         </div>
       </div>
@@ -675,34 +701,42 @@
       <div class="section-title"><span>Workspace &amp; Mesh Controls</span></div>
       <div class="control-grid">
         <div class="control-item">
-          <label>Domain Range [±L]</label>
-          <input type="number" id="ctrl-domain" value="8" min="2" max="25" step="1" onchange="onDomainOrAxesChange()">
+          <label>Axis Space [±L]</label>
+          <input type="number" id="ctrl-domain" value="8" min="2" max="30" step="1" onchange="evaluateAndPlot()">
         </div>
         <div class="control-item">
           <label>Grid Resolution</label>
           <select id="ctrl-res" onchange="evaluateAndPlot()">
             <option value="45">Fast (45×45)</option>
             <option value="75" selected>Standard (75×75)</option>
-            <option value="105">High (105×105)</option>
+            <option value="110">High (110×110)</option>
+          </select>
+        </div>
+        <div class="control-item">
+          <label>Curve Thickness</label>
+          <select id="ctrl-curve-thick" onchange="evaluateAndPlot()">
+            <option value="0.025" selected>Crisp Fine (Best for Points)</option>
+            <option value="0.045">Medium</option>
+            <option value="0.075">Bold Presentation</option>
           </select>
         </div>
         <div class="control-item">
           <label>Colour Mapping</label>
           <select id="ctrl-colormap" onchange="evaluateAndPlot()">
-            <option value="height">Vibrant Spectrum (Z-Height)</option>
-            <option value="cool">Neon Cyan-Magenta</option>
-            <option value="thermal">Solar Magma Glow</option>
-            <option value="complex">Emerald-Gold Gradient</option>
+            <option value="height">Height (z-value Spectrum)</option>
+            <option value="cool">Cyan-Purple Scientific</option>
+            <option value="thermal">Thermal Magma</option>
+            <option value="complex">Phase / Steepness</option>
           </select>
         </div>
-        <div class="control-item">
-          <label>Surface Opacity</label>
-          <input type="range" id="ctrl-opacity" min="0.2" max="1.0" step="0.05" value="0.92" oninput="updateMaterialOpacity()">
-        </div>
+      </div>
+      <div class="slider-row" style="margin-bottom:4px;">
+        <div class="slider-header"><span>Surface Opacity</span><span class="val" id="lbl-opacity">0.88</span></div>
+        <input type="range" id="ctrl-opacity" min="0.2" max="1.0" step="0.05" value="0.88" oninput="updateMaterialOpacity()">
       </div>
       <div class="checkbox-row">
         <label class="checkbox-label"><input type="checkbox" id="chk-wireframe" checked onchange="evaluateAndPlot()"> Mesh Wireframe</label>
-        <label class="checkbox-label"><input type="checkbox" id="chk-axes" checked onchange="onDomainOrAxesChange()"> Axes &amp; Grid</label>
+        <label class="checkbox-label"><input type="checkbox" id="chk-axes" checked onchange="toggleAxesGrid()"> Axes &amp; Grid</label>
         <label class="checkbox-label"><input type="checkbox" id="chk-probe-vec" checked onchange="evaluateAndPlot()"> Normal/Tangent</label>
       </div>
     </div>
@@ -731,31 +765,38 @@
     <div class="panel-section" style="border-bottom:none;">
       <div class="section-title"><span>Mathematical Intuition &amp; Analysis</span></div>
       <div class="explanation-box" id="explanation-box">
-        <h4 id="exp-title">Elliptic Paraboloid (z = x² + y²)</h4>
-        <div id="exp-body">A bowl-shaped quadric surface. Cross-sections parallel to the x-z or y-z planes are upward-opening parabolas, while horizontal level curves (z = c &gt; 0) are concentric circles.</div>
-        <div class="math-stat" id="exp-stats">Global Minimum at (0, 0, 0) | ∂z/∂x = 2x, ∂z/∂y = 2y</div>
+        <h4 id="exp-title">Parabola in 2D Plane (y = x²)</h4>
+        <div id="exp-body">Symmetric quadratic curve opening upward along the +y axis with its vertex at the origin (0, 0).</div>
+        <div class="math-stat" id="exp-stats">Vertex: (0, 0) | Focus: (0, 0.25) | Slope dy/dx = 2x</div>
       </div>
     </div>
 
   </aside>
 
-  <!-- CENTRAL 3D WORKSPACE -->
+  <!-- CENTRAL 3D / 2D WORKSPACE -->
   <main class="workspace" id="workspace">
     <div id="canvas-container"></div>
 
+    <!-- Legend Overlay -->
     <div class="legend-overlay" id="legend-overlay">
       <div style="font-weight:700; color:var(--text-muted); font-size:10.5px; text-transform:uppercase; margin-bottom:6px;">Active Scene Objects</div>
       <div id="legend-items"></div>
     </div>
 
+    <!-- Dedicated 2D / 3D Mode Switch + Camera Presets Toolbar -->
     <div class="camera-toolbar">
-      <button class="btn-sm" onclick="setCameraView('iso')">Isometric</button>
+      <div class="dim-switch" title="Switch between Dedicated 2D Plane View and 3D Space View">
+        <button class="dim-btn" id="btn-dim-2d" onclick="setDimensionView('2D')">2D View (X-Y)</button>
+        <button class="dim-btn active" id="btn-dim-3d" onclick="setDimensionView('3D')">3D View</button>
+      </div>
+      <button class="btn-sm" onclick="setCameraView('iso')">3D Iso</button>
       <button class="btn-sm" onclick="setCameraView('top')">Top (X-Y)</button>
       <button class="btn-sm" onclick="setCameraView('front')">Front (X-Z)</button>
       <button class="btn-sm" onclick="setCameraView('side')">Side (Y-Z)</button>
-      <button class="btn-sm" onclick="setCameraView('reset')">Reset Cam</button>
+      <button class="btn-sm" onclick="setCameraView('reset')">Reset</button>
     </div>
 
+    <!-- Guided Learning Floating Card -->
     <div class="guided-card" id="guided-card">
       <h4>
         <span id="guided-level-badge">Level 1: Beginner</span>
@@ -771,10 +812,12 @@
       <div class="guided-answer" id="guided-answer">When <code>a</code> and <code>b</code> have opposite signs, the surface transforms from an Elliptic Paraboloid (bowl) into a Hyperbolic Paraboloid (saddle), curving upward along x and downward along y!</div>
     </div>
 
+    <!-- Hover / Click Coordinate & Gradient Probe -->
     <div class="probe-overlay" id="probe-overlay">
-      Hover or click on any 3D mathematical structure to inspect (x, y, z) coordinates &amp; local derivatives.
+      Move cursor over curve or surface to inspect exact coordinates &amp; derivatives.
     </div>
 
+    <!-- Time Animation Bar -->
     <div class="anim-bar">
       <button class="btn-sm" id="btn-play" onclick="togglePlayAnimation()">▶ Play t</button>
       <button class="btn-sm" onclick="stepTime(-0.1)">-Δt</button>
@@ -1056,12 +1099,12 @@ const MathEngine = (function() {
    2. COMPLETE FUNCTION LIBRARY (CATEGORIES A THROUGH J)
    ============================================================================ */
 const FUNCTION_LIBRARY = [
-  { cat: 'A', name: '2D Parabola (Curve in Plane)', eq: 'y = x²', mode: 'function', desc: 'Standard quadratic parabola y = x² embedded in the xy-plane.' },
+  { cat: 'A', name: '2D Parabola (Curve in Plane)', eq: 'y = x²', mode: 'function', desc: 'Standard quadratic parabola y = x² viewed in clean 2D coordinate plane.' },
   { cat: 'A', name: 'Cubic Polynomial with Extrema', eq: 'f(x) = x³ - 3x', mode: 'function', desc: 'Cubic curve featuring a local maximum at x = -1 and local minimum at x = 1.' },
   { cat: 'A', name: 'Quartic Double-Well Potential', eq: 'y = a*x⁴ - b*x²', mode: 'function', desc: 'Symmetric quartic polynomial used in Landau phase transitions and quantum double wells.' },
-  { cat: 'A', name: 'Elliptic Paraboloid (Bowl)', eq: 'z = a*x² + b*y²', mode: 'function', desc: 'Bowl-shaped surface formed by summing two upward parabolas along x and y.' },
-  { cat: 'A', name: 'Hyperbolic Paraboloid (Saddle)', eq: 'z = x² - y²', mode: 'function', desc: 'Classic saddle surface with positive curvature along x and negative curvature along y.' },
-  { cat: 'A', name: 'Monkey Saddle', eq: 'z = x³ - 3*x*y²', mode: 'function', desc: 'Surface with a degenerate critical point at the origin having three downward valleys.' },
+  { cat: 'A', name: 'Elliptic Paraboloid (3D Bowl)', eq: 'z = a*x² + b*y²', mode: 'function', desc: 'Bowl-shaped 3D surface formed by summing two upward parabolas along x and y.' },
+  { cat: 'A', name: 'Hyperbolic Paraboloid (3D Saddle)', eq: 'z = x² - y²', mode: 'function', desc: 'Classic 3D saddle surface with positive curvature along x and negative curvature along y.' },
+  { cat: 'A', name: 'Monkey Saddle (3D)', eq: 'z = x³ - 3*x*y²', mode: 'function', desc: 'Surface with a degenerate critical point at the origin having three downward valleys.' },
 
   { cat: 'B', name: 'Principal Square Root (Domain x ≥ 0)', eq: 'y = √(x)', mode: 'function', desc: 'Real-valued square root defined strictly for non-negative x ≥ 0.' },
   { cat: 'B', name: 'Real Cube Root', eq: 'y = ∛(x)', mode: 'function', desc: 'Odd root defined across all real numbers with a vertical tangent at x = 0.' },
@@ -1069,21 +1112,21 @@ const FUNCTION_LIBRARY = [
   { cat: 'B', name: '3D Euclidean Cone', eq: 'z = √(x² + y²)', mode: 'function', desc: 'Right circular cone measuring radial distance r from the z-axis.' },
   { cat: 'B', name: 'Manhattan Distance Pyramid', eq: 'z = |x| + |y|', mode: 'function', desc: 'Square inverted pyramid formed by the L1 absolute-value norm.' },
 
-  { cat: 'C', name: 'Modulated Sine Wave', eq: 'y = A*sin(ω*x + φ)', mode: 'function', desc: 'Harmonic sine wave with interactive Amplitude A, Angular Frequency ω, and Phase φ.' },
+  { cat: 'C', name: 'Modulated Sine Wave (2D)', eq: 'y = A*sin(ω*x + φ)', mode: 'function', desc: 'Harmonic sine wave with interactive Amplitude A, Angular Frequency ω, and Phase φ.' },
   { cat: 'C', name: 'Tangent with Vertical Asymptotes', eq: 'y = tan(x)', mode: 'function', desc: 'Periodic trigonometric function with discontinuities at odd multiples of π/2.' },
   { cat: 'C', name: 'Secant Reciprocal Curve', eq: 'y = sec(x)', mode: 'function', desc: 'Reciprocal of cos(x); never enters the strip (-1, 1).' },
-  { cat: 'C', name: 'Egg-Carton Periodic Surface', eq: 'z = sin(x)*cos(y)', mode: 'function', desc: '2D periodic lattice of alternating local maxima, minima, and saddle points.' },
-  { cat: 'C', name: '2D Wave Interference Lattice', eq: 'z = A*sin(ω*x) + B*cos(ω*y)', mode: 'function', desc: 'Superposition of orthogonal sinusoidal waves.' },
+  { cat: 'C', name: 'Egg-Carton Periodic Surface (3D)', eq: 'z = sin(x)*cos(y)', mode: 'function', desc: '2D periodic lattice of alternating local maxima, minima, and saddle points.' },
+  { cat: 'C', name: '2D Wave Interference Lattice (3D)', eq: 'z = A*sin(ω*x) + B*cos(ω*y)', mode: 'function', desc: 'Superposition of orthogonal sinusoidal waves.' },
 
-  { cat: 'D', name: 'Exponential Growth Curve', eq: 'y = e^(a*x)', mode: 'function', desc: 'Rapid exponential growth (a > 0) or decay (a < 0) whose derivative is proportional to itself.' },
-  { cat: 'D', name: '1D Gaussian Bell Curve', eq: 'y = A*e^(-b*x²)', mode: 'function', desc: 'Normal probability density and wave-packet envelope.' },
-  { cat: 'D', name: '2D Gaussian Peak', eq: 'z = A*e^(-(x² + y²))', mode: 'function', desc: 'Radially symmetric Gaussian hill decaying smoothly in all directions.' },
-  { cat: 'D', name: 'Logarithmic Potential Funnel', eq: 'z = ln(x² + y²)', mode: 'function', desc: '2D electrostatic / gravitational potential with a singularity at the origin (0,0).' },
+  { cat: 'D', name: 'Exponential Growth Curve (2D)', eq: 'y = e^(a*x)', mode: 'function', desc: 'Rapid exponential growth (a > 0) or decay (a < 0) whose derivative is proportional to itself.' },
+  { cat: 'D', name: '1D Gaussian Bell Curve (2D)', eq: 'y = A*e^(-b*x²)', mode: 'function', desc: 'Normal probability density and wave-packet envelope.' },
+  { cat: 'D', name: '2D Gaussian Peak (3D)', eq: 'z = A*e^(-(x² + y²))', mode: 'function', desc: 'Radially symmetric Gaussian hill decaying smoothly in all directions.' },
+  { cat: 'D', name: 'Logarithmic Potential Funnel (3D)', eq: 'z = ln(x² + y²)', mode: 'function', desc: '2D electrostatic / gravitational potential with a singularity at the origin (0,0).' },
 
   { cat: 'E', name: 'Catenary Arch / Hanging Cable', eq: 'y = a*cosh(x/a)', mode: 'function', desc: 'Exact shape assumed by a uniform hanging chain under gravity.' },
   { cat: 'E', name: 'Hyperbolic Sine', eq: 'y = sinh(x)', mode: 'function', desc: 'Odd hyperbolic function growing exponentially as ±e^|x|/2.' },
   { cat: 'E', name: 'Hyperbolic Tangent Activation', eq: 'y = tanh(x)', mode: 'function', desc: 'Smooth sigmoidal transition between horizontal asymptotes y = -1 and y = +1.' },
-  { cat: 'E', name: 'Hyperbolic-Trig Hybrid Surface', eq: 'z = 0.3*cosh(x) - cos(y)', mode: 'function', desc: 'Combines exponential hyperbolic curvature along x with periodic oscillation along y.' },
+  { cat: 'E', name: 'Hyperbolic-Trig Hybrid Surface (3D)', eq: 'z = 0.3*cosh(x) - cos(y)', mode: 'function', desc: 'Combines exponential hyperbolic curvature along x with periodic oscillation along y.' },
 
   { cat: 'F', name: 'Travelling Wave (Press Play t)', eq: 'y = A*sin(k*x - ω*t)', mode: 'function', desc: '1D wave propagating in the +x direction at phase velocity v = ω/k.' },
   { cat: 'F', name: 'Underdamped Harmonic Oscillator', eq: 'y = A*e^(-0.3*x)*cos(2*x)', mode: 'function', desc: 'Oscillation whose amplitude decays exponentially due to damping.' },
@@ -1099,7 +1142,7 @@ const FUNCTION_LIBRARY = [
   { cat: 'G', name: '3D Quadric: Hyperboloid of Two Sheets', eq: 'z² - x² - y² = 1', mode: 'implicit', desc: 'Disconnected two-sheeted quadric surface opening along the z-axis.' },
   { cat: 'G', name: '3D Quadric: Double Cone', eq: 'x² + y² = z²', mode: 'implicit', desc: 'Implicit double cone meeting at the apex (0,0,0).' },
 
-  { cat: 'H', name: 'Reciprocal Hyperbola', eq: 'y = 1/x', mode: 'function', desc: 'Disconnected branches across the vertical asymptote x = 0.' },
+  { cat: 'H', name: 'Reciprocal Hyperbola (2D)', eq: 'y = 1/x', mode: 'function', desc: 'Disconnected branches across the vertical asymptote x = 0.' },
   { cat: 'H', name: 'Slant & Vertical Asymptote Rational', eq: 'y = (x² - 1)/(x - 2)', mode: 'function', desc: 'Rational curve with a vertical asymptote at x = 2 and oblique behaviour.' },
   { cat: 'H', name: '3D Inverse-Square Volcano', eq: 'z = 1 / (x² + y²)', mode: 'function', desc: 'Radially symmetric rational surface blowing up as (x,y) → (0,0).' },
 
@@ -1121,7 +1164,7 @@ const GUIDED_LESSONS = [
     answer: 'When a > 0 and b < 0, the surface turns into a Hyperbolic Paraboloid (Saddle)! Cross-sections along x curve upward (parabolas opening +z), while cross-sections along y curve downward (parabolas opening -z).'
   },
   {
-    level: 'Level 2: Intermediate — Derivatives & Wave Superposition',
+    level: 'Level 2: Intermediate — Derivatives & Slope Inspection',
     eq: 'f(x) = x³ - 3*x',
     mode: 'calculus',
     question: 'In Calculus Mode, move the Probe Point slider x₀ across x = -1 and x = +1. Watch the green tangent line and the derivative value f\'(x₀). What happens to the slope at the peak and trough?',
@@ -1137,9 +1180,11 @@ const GUIDED_LESSONS = [
 ];
 
 /* ============================================================================
-   3. GLOBAL STATE & THREE.JS INITIALIZATION
+   3. GLOBAL STATE & THREE.JS INITIALIZATION (WITH 2D / 3D VIEW ENGINE)
    ============================================================================ */
 let appMode = 'function';
+let currentViewDim = '2D'; // '2D' or '3D'
+let lastAutoKind = '';
 let useDegrees = false;
 let currentParams = {};
 let defaultParams = { a: 1, b: 1, c: 1, A: 2, B: 2, k: 1, ω: 1, φ: 0, r: 3 };
@@ -1149,13 +1194,12 @@ let animTime = 0;
 let scene, camera, renderer, controls, raycaster, mouse;
 let plotGroup, axesGroup, probeGroup;
 let interactiveMeshes = [];
-let cachedAxesState = '';
 
 function initThreeJS() {
   const container = document.getElementById('canvas-container');
   scene = new THREE.Scene();
 
-  camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 800);
+  camera = new THREE.PerspectiveCamera(42, container.clientWidth / container.clientHeight, 0.1, 1000);
   camera.up.set(0, 0, 1);
   camera.position.set(14, -14, 11);
 
@@ -1166,17 +1210,16 @@ function initThreeJS() {
 
   controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
-  controls.dampingFactor = 0.07;
+  controls.dampingFactor = 0.08;
   controls.target.set(0, 0, 0);
 
-  // Bright, Vibrant Studio Lighting so surfaces and curves look vivid and never dull
-  const ambient = new THREE.AmbientLight(0xffffff, 0.85);
+  const ambient = new THREE.AmbientLight(0xffffff, 0.72);
   scene.add(ambient);
-  const dir1 = new THREE.DirectionalLight(0xffffff, 0.9);
-  dir1.position.set(20, -20, 28);
+  const dir1 = new THREE.DirectionalLight(0xffffff, 0.78);
+  dir1.position.set(18, -18, 25);
   scene.add(dir1);
-  const dir2 = new THREE.DirectionalLight(0x7dd3fc, 0.55);
-  dir2.position.set(-20, 20, -15);
+  const dir2 = new THREE.DirectionalLight(0x90caf9, 0.45);
+  dir2.position.set(-18, 18, -14);
   scene.add(dir2);
 
   plotGroup = new THREE.Group();
@@ -1187,15 +1230,13 @@ function initThreeJS() {
   scene.add(probeGroup);
 
   raycaster = new THREE.Raycaster();
-  raycaster.params.Line.threshold = 0.2;
+  raycaster.params.Line.threshold = 0.18;
   mouse = new THREE.Vector2();
 
   renderer.domElement.addEventListener('mousemove', onCanvasMouseMove);
   renderer.domElement.addEventListener('click', onCanvasMouseMove);
   window.addEventListener('resize', onWindowResize);
 
-  const initL = parseFloat(document.getElementById('ctrl-domain').value) || 8;
-  buildCoordinateAxes(initL, true);
   renderLibrary();
   evaluateAndPlot();
   animateLoop();
@@ -1210,16 +1251,59 @@ function onWindowResize() {
 }
 
 /* ============================================================================
-   4. FLICKER-FREE 3D CARTESIAN COORDINATE SYSTEM, EXTENDED AXES & 1,2,3,4 LABELS
+   4. DEDICATED 2D VIEW vs 3D VIEW CONTROLLER
    ============================================================================ */
-function makeTextSprite(text, colorStr = '#f8fafc', fontSize = 44, scaleVal = 0.95) {
+function setDimensionView(dim, preserveCam = false) {
+  currentViewDim = dim;
+  document.getElementById('btn-dim-2d').classList.toggle('active', dim === '2D');
+  document.getElementById('btn-dim-3d').classList.toggle('active', dim === '3D');
+
+  const L = Math.max(2, parseFloat(document.getElementById('ctrl-domain').value) || 8);
+
+  if (dim === '2D') {
+    // Pure Top-Down 2D Plane View (X right, Y up on screen)
+    camera.up.set(0, 1, 0);
+    if (!preserveCam) {
+      controls.target.set(0, 0, 0);
+      camera.position.set(0, 0, L * 2.35);
+    }
+    controls.enableRotate = false;
+    controls.screenSpacePanning = true;
+    controls.mouseButtons = {
+      LEFT: THREE.MOUSE.PAN,
+      MIDDLE: THREE.MOUSE.DOLLY,
+      RIGHT: THREE.MOUSE.PAN
+    };
+  } else {
+    // Full 3D Orbit View (Z up)
+    camera.up.set(0, 0, 1);
+    if (!preserveCam) {
+      controls.target.set(0, 0, 0);
+      camera.position.set(L * 1.65, -L * 1.65, L * 1.15);
+    }
+    controls.enableRotate = true;
+    controls.screenSpacePanning = true;
+    controls.mouseButtons = {
+      LEFT: THREE.MOUSE.ROTATE,
+      MIDDLE: THREE.MOUSE.DOLLY,
+      RIGHT: THREE.MOUSE.PAN
+    };
+  }
+  controls.update();
+  buildCoordinateAxes(L);
+}
+
+/* ============================================================================
+   5. HIGH-CONTRAST 1x1 SQUARE GRID, NON-FLICKERING AXES & SEQUENTIAL NUMBERS
+   ============================================================================ */
+function makeTextSprite(text, colorStr = '#f8fafc', fontSize = 54) {
   const canvas = document.createElement('canvas');
   canvas.width = 256;
   canvas.height = 128;
   const ctx = canvas.getContext('2d');
   ctx.font = `bold ${fontSize}px Inter, Consolas, sans-serif`;
-  // Subtle dark outline so numbers pop cleanly against any grid or surface
-  ctx.strokeStyle = 'rgba(7, 10, 16, 0.9)';
+  // Subtle dark halo so numbers are 100% readable over grid lines
+  ctx.strokeStyle = 'rgba(6, 9, 17, 0.9)';
   ctx.lineWidth = 7;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -1229,107 +1313,136 @@ function makeTextSprite(text, colorStr = '#f8fafc', fontSize = 44, scaleVal = 0.
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.minFilter = THREE.LinearFilter;
-  const mat = new THREE.SpriteMaterial({ map: texture, depthTest: false, transparent: true });
+  const mat = new THREE.SpriteMaterial({ map: texture, depthTest: false, depthWrite: false });
   const sprite = new THREE.Sprite(mat);
-  sprite.scale.set(scaleVal * 1.4, scaleVal * 0.7, 1);
-  sprite.renderOrder = 999;
+  sprite.scale.set(1.15, 0.58, 1);
+  sprite.renderOrder = 20;
   return sprite;
 }
 
-function buildCoordinateAxes(L, forceRebuild = false) {
-  const showAxes = document.getElementById('chk-axes').checked;
-  const stateKey = `${L}_${showAxes}`;
-  if (!forceRebuild && cachedAxesState === stateKey) return;
-  cachedAxesState = stateKey;
-
+function buildCoordinateAxes(L) {
   clearGroup(axesGroup);
-  if (!showAxes) return;
+  if (!document.getElementById('chk-axes').checked) return;
 
-  // Extend grid and axes comfortably beyond the plot domain so everything has breathing room
-  const gridBound = Math.ceil(L + 2);
-  const axisLen = gridBound + 1.5;
+  // 1. Custom crisp 1x1 unit square grid + 0.5 sub-grid (Zero Z-fighting on X=0 and Y=0)
+  const subVerts = [];
+  const majorVerts = [];
+  const zGridOffset = -0.008; // Placed slightly behind axes to completely stop flickering
 
-  // Custom Non-Overlapping Grid (skips i = 0 so it NEVER Z-fights or fluctuates with the X and Y axes!)
-  const minorPts = [];
-  for (let i = -gridBound; i <= gridBound; i++) {
-    if (i === 0) continue; // Crucial: prevents flickering on X=0 and Y=0 axes
-    minorPts.push(new THREE.Vector3(i, -gridBound, -0.004), new THREE.Vector3(i, gridBound, -0.004));
-    minorPts.push(new THREE.Vector3(-gridBound, i, -0.004), new THREE.Vector3(gridBound, i, -0.004));
+  for (let u = -L; u <= L + 0.001; u += 0.5) {
+    const isInt = Math.abs(u - Math.round(u)) < 1e-4;
+    const val = isInt ? Math.round(u) : u;
+    if (Math.abs(val) < 1e-4) continue; // Skip 0 so grid never fights with main X and Y axes!
+
+    if (isInt) {
+      majorVerts.push(-L, val, zGridOffset, L, val, zGridOffset);
+      majorVerts.push(val, -L, zGridOffset, val, L, zGridOffset);
+    } else if (L <= 12) {
+      subVerts.push(-L, val, zGridOffset, L, val, zGridOffset);
+      subVerts.push(val, -L, zGridOffset, val, L, zGridOffset);
+    }
   }
-  const gridGeo = new THREE.BufferGeometry().setFromPoints(minorPts);
-  const gridMat = new THREE.LineBasicMaterial({ color: 0x26354d, transparent: true, opacity: 0.75 });
-  axesGroup.add(new THREE.LineSegments(gridGeo, gridMat));
 
-  // Border frame around grid
-  const borderPts = [
-    new THREE.Vector3(-gridBound, -gridBound, -0.004), new THREE.Vector3(gridBound, -gridBound, -0.004),
-    new THREE.Vector3(gridBound, -gridBound, -0.004), new THREE.Vector3(gridBound, gridBound, -0.004),
-    new THREE.Vector3(gridBound, gridBound, -0.004), new THREE.Vector3(-gridBound, gridBound, -0.004),
-    new THREE.Vector3(-gridBound, gridBound, -0.004), new THREE.Vector3(-gridBound, -gridBound, -0.004)
-  ];
-  axesGroup.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(borderPts), new THREE.LineBasicMaterial({ color: 0x3b5278 })));
+  // Border frame around [-L, L]
+  majorVerts.push(-L, -L, zGridOffset, L, -L, zGridOffset);
+  majorVerts.push(-L, L, zGridOffset, L, L, zGridOffset);
+  majorVerts.push(-L, -L, zGridOffset, -L, L, zGridOffset);
+  majorVerts.push(L, -L, zGridOffset, L, L, zGridOffset);
 
-  // Helper to create solid, zero-flicker 3D cylindrical axes with arrow cones
-  function createSolidAxis(startVec, endVec, colorHex, labelText, labelPos) {
-    const path = new THREE.LineCurve3(startVec, endVec);
-    const tubeGeo = new THREE.TubeGeometry(path, 1, 0.032, 12, false);
-    const tubeMat = new THREE.MeshBasicMaterial({ color: colorHex });
-    const mesh = new THREE.Mesh(tubeGeo, tubeMat);
-    axesGroup.add(mesh);
-
-    // Arrowhead cone at positive end
-    const coneGeo = new THREE.ConeGeometry(0.12, 0.36, 16);
-    const coneMat = new THREE.MeshBasicMaterial({ color: colorHex });
-    const cone = new THREE.Mesh(coneGeo, coneMat);
-    cone.position.copy(endVec);
-    const dir = new THREE.Vector3().subVectors(endVec, startVec).normalize();
-    cone.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
-    axesGroup.add(cone);
-
-    const lbl = makeTextSprite(labelText, '#' + colorHex.toString(16).padStart(6, '0'), 52, 1.05);
-    lbl.position.copy(labelPos);
-    axesGroup.add(lbl);
+  if (subVerts.length > 0) {
+    const subGeo = new THREE.BufferGeometry();
+    subGeo.setAttribute('position', new THREE.Float32BufferAttribute(subVerts, 3));
+    const subLines = new THREE.LineSegments(subGeo, new THREE.LineBasicMaterial({ color: 0x162035, transparent: true, opacity: 0.75 }));
+    axesGroup.add(subLines);
   }
+
+  const majorGeo = new THREE.BufferGeometry();
+  majorGeo.setAttribute('position', new THREE.Float32BufferAttribute(majorVerts, 3));
+  const majorLines = new THREE.LineSegments(majorGeo, new THREE.LineBasicMaterial({ color: 0x2e4166, transparent: true, opacity: 0.95 }));
+  axesGroup.add(majorLines);
+
+  // 2. Extended, Non-Fluctuating Cylinder Axes + Conical Arrowheads
+  const axisLen = L * 1.18;
+  const axisRadius = Math.max(0.022, L * 0.0032);
 
   // X-Axis (Vibrant Coral Red)
-  createSolidAxis(new THREE.Vector3(-axisLen, 0, 0), new THREE.Vector3(axisLen, 0, 0), 0xff5a65, 'X', new THREE.Vector3(axisLen + 0.65, 0, 0));
-  // Y-Axis (Vibrant Emerald Green)
-  createSolidAxis(new THREE.Vector3(0, -axisLen, 0), new THREE.Vector3(0, axisLen, 0), 0x34d399, 'Y', new THREE.Vector3(0, axisLen + 0.65, 0));
-  // Z-Axis (Vibrant Sky Blue)
-  createSolidAxis(new THREE.Vector3(0, 0, -axisLen), new THREE.Vector3(0, 0, axisLen), 0x38bdf8, 'Z', new THREE.Vector3(0, 0, axisLen + 0.65));
+  const xCylGeo = new THREE.CylinderGeometry(axisRadius, axisRadius, axisLen * 2, 12);
+  xCylGeo.rotateZ(-Math.PI / 2);
+  const xMat = new THREE.MeshBasicMaterial({ color: 0xff4d6d });
+  axesGroup.add(new THREE.Mesh(xCylGeo, xMat));
 
-  // Sequential Integer Labels: 1, 2, 3, 4, 5... (and -1, -2, -3, -4...) on X, Y, and Z axes
-  const tickStep = L > 14 ? 2 : 1;
-  const tickMarks = [];
-  for (let v = -gridBound; v <= gridBound; v += tickStep) {
+  const xCone = new THREE.Mesh(new THREE.ConeGeometry(axisRadius * 3.2, axisRadius * 10, 14), xMat);
+  xCone.rotation.z = -Math.PI / 2;
+  xCone.position.set(axisLen, 0, 0);
+  axesGroup.add(xCone);
+
+  const xLbl = makeTextSprite('X', '#ff4d6d', 62);
+  xLbl.position.set(axisLen + 0.55, 0, 0);
+  axesGroup.add(xLbl);
+
+  // Y-Axis (Vibrant Emerald Green)
+  const yCylGeo = new THREE.CylinderGeometry(axisRadius, axisRadius, axisLen * 2, 12);
+  const yMat = new THREE.MeshBasicMaterial({ color: 0x00f59b });
+  axesGroup.add(new THREE.Mesh(yCylGeo, yMat));
+
+  const yCone = new THREE.Mesh(new THREE.ConeGeometry(axisRadius * 3.2, axisRadius * 10, 14), yMat);
+  yCone.position.set(0, axisLen, 0);
+  axesGroup.add(yCone);
+
+  const yLbl = makeTextSprite('Y', '#00f59b', 62);
+  yLbl.position.set(0, axisLen + 0.55, 0);
+  axesGroup.add(yLbl);
+
+  // Z-Axis (Shown only in 3D View so 2D View stays 100% clean)
+  if (currentViewDim === '3D') {
+    const zCylGeo = new THREE.CylinderGeometry(axisRadius, axisRadius, axisLen * 2, 12);
+    zCylGeo.rotateX(Math.PI / 2);
+    const zMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff });
+    axesGroup.add(new THREE.Mesh(zCylGeo, zMat));
+
+    const zCone = new THREE.Mesh(new THREE.ConeGeometry(axisRadius * 3.2, axisRadius * 10, 14), zMat);
+    zCone.rotation.x = Math.PI / 2;
+    zCone.position.set(0, 0, axisLen);
+    axesGroup.add(zCone);
+
+    const zLbl = makeTextSprite('Z', '#00d2ff', 62);
+    zLbl.position.set(0, 0, axisLen + 0.55);
+    axesGroup.add(zLbl);
+  }
+
+  // 3. Sequential Integer Numbering (1, 2, 3, 4, 5... and -1, -2, -3...)
+  const tickStep = L > 16 ? 2 : 1;
+  const tickHalf = 0.12;
+  const tickVerts = [];
+
+  for (let v = -L; v <= L; v += tickStep) {
     if (v === 0) continue;
 
-    // X-axis tick & number (1, 2, 3, 4...)
-    tickMarks.push(new THREE.Vector3(v, -0.12, 0), new THREE.Vector3(v, 0.12, 0));
-    const sx = makeTextSprite(String(v), '#cbd5e1', 36, 0.72);
-    sx.position.set(v, -0.42, 0);
+    // Cross tick marks on X and Y axes
+    tickVerts.push(v, -tickHalf, 0.005, v, tickHalf, 0.005);
+    tickVerts.push(-tickHalf, v, 0.005, tickHalf, v, 0.005);
+
+    const sx = makeTextSprite(String(v), '#e2e8f0', 44);
+    sx.scale.set(0.85, 0.42, 1);
+    sx.position.set(v, -0.38, 0.01);
     axesGroup.add(sx);
 
-    // Y-axis tick & number (1, 2, 3, 4...)
-    tickMarks.push(new THREE.Vector3(-0.12, v, 0), new THREE.Vector3(0.12, v, 0));
-    const sy = makeTextSprite(String(v), '#cbd5e1', 36, 0.72);
-    sy.position.set(-0.42, v, 0);
+    const sy = makeTextSprite(String(v), '#e2e8f0', 44);
+    sy.scale.set(0.85, 0.42, 1);
+    sy.position.set(-0.38, v, 0.01);
     axesGroup.add(sy);
 
-    // Z-axis tick & number
-    tickMarks.push(new THREE.Vector3(-0.1, 0, v), new THREE.Vector3(0.1, 0, v));
-    const sz = makeTextSprite(String(v), '#94a3b8', 34, 0.68);
-    sz.position.set(-0.42, 0, v);
-    axesGroup.add(sz);
+    if (currentViewDim === '3D' && v % 2 === 0) {
+      const sz = makeTextSprite(String(v), '#7dd3fc', 40);
+      sz.scale.set(0.8, 0.4, 1);
+      sz.position.set(-0.38, 0, v);
+      axesGroup.add(sz);
+    }
   }
-  const tickGeo = new THREE.BufferGeometry().setFromPoints(tickMarks);
-  axesGroup.add(new THREE.LineSegments(tickGeo, new THREE.LineBasicMaterial({ color: 0x94a3b8 })));
-}
 
-function onDomainOrAxesChange() {
-  const L = Math.max(2, parseFloat(document.getElementById('ctrl-domain').value) || 8);
-  buildCoordinateAxes(L, true);
-  evaluateAndPlot();
+  const tickGeo = new THREE.BufferGeometry();
+  tickGeo.setAttribute('position', new THREE.Float32BufferAttribute(tickVerts, 3));
+  axesGroup.add(new THREE.LineSegments(tickGeo, new THREE.LineBasicMaterial({ color: 0xffffff })));
 }
 
 function clearGroup(group) {
@@ -1345,27 +1458,23 @@ function clearGroup(group) {
 }
 
 /* ============================================================================
-   5. VIBRANT COLOUR MAPPING & MATERIAL HELPERS
+   6. COLOUR MAPPING & CLASSIFICATION
    ============================================================================ */
 function mapColor(t, scheme) {
   const c = Math.max(0, Math.min(1, isNaN(t) ? 0.5 : t));
   const color = new THREE.Color();
   if (scheme === 'cool') {
-    color.setHSL(0.5 + 0.32 * c, 0.95, 0.52 + 0.12 * c);
+    color.setHSL(0.52 + 0.28 * c, 0.9, 0.48 + 0.15 * c);
   } else if (scheme === 'thermal') {
-    color.setHSL(0.0 + 0.16 * c, 1.0, 0.35 + 0.45 * c);
+    color.setHSL(0.0 + 0.16 * c, 0.95, 0.3 + 0.48 * c);
   } else if (scheme === 'complex') {
-    color.setHSL(0.38 - 0.26 * c, 0.92, 0.48 + 0.15 * c);
+    color.setHSL(c, 0.9, 0.55);
   } else {
-    // High-Vibrancy Rainbow Height Spectrum
-    color.setHSL((1 - c) * 0.64, 0.95, 0.54);
+    color.setHSL((1 - c) * 0.65, 0.92, 0.52);
   }
   return color;
 }
 
-/* ============================================================================
-   6. AUTOMATIC EQUATION CLASSIFICATION
-   ============================================================================ */
 function classifyEquation(rawInput) {
   const raw = rawInput.trim();
   if (!raw) throw new Error('Please enter a mathematical equation.');
@@ -1373,10 +1482,10 @@ function classifyEquation(rawInput) {
   if (/^dy\s*\/\s*dx\s*=/.test(raw) || /^y'\s*=/.test(raw)) {
     const rhs = raw.split('=')[1];
     const parsed = MathEngine.parse(rhs);
-    return { kind: 'ode1', rhs, parsed, label: '1st-Order ODE dy/dx = f(x,y)' };
+    return { kind: 'ode1', rhs, parsed, label: '1st-Order ODE dy/dx = f(x,y)', is2D: true };
   }
   if (/d²y\/dx²|y''/.test(raw)) {
-    return { kind: 'ode2', raw, parsed: MathEngine.parse('x'), label: '2nd-Order Harmonic ODE' };
+    return { kind: 'ode2', raw, parsed: MathEngine.parse('x'), label: '2nd-Order Harmonic ODE', is2D: false };
   }
 
   const parts = raw.split('=');
@@ -1389,47 +1498,47 @@ function classifyEquation(rawInput) {
 
     if ((lhs === 'y' || /^f\s*\(\s*x\s*\)$/.test(lhs)) && !/\by\b|\bz\b/.test(rhs)) {
       const parsed = MathEngine.parse(rhs);
-      return { kind: 'curve2d', expr: rhs, parsed, label: '2D Curve y = f(x) in 3D Plane' };
+      return { kind: 'curve2d', expr: rhs, parsed, label: '2D Function y = f(x)', is2D: true };
     }
     if (lhs === 'x' && !/\bx\b|\bz\b/.test(rhs)) {
       const parsed = MathEngine.parse(rhs);
-      return { kind: 'curve2d_x', expr: rhs, parsed, label: '2D Curve x = g(y) in 3D Plane' };
+      return { kind: 'curve2d_x', expr: rhs, parsed, label: '2D Curve x = g(y)', is2D: true };
     }
     if ((lhs === 'z' || /^f\s*\(\s*x\s*,\s*y\s*\)$/.test(lhs)) && !/\bz\b/.test(rhs)) {
       const parsed = MathEngine.parse(rhs);
-      return { kind: 'surface_explicit', expr: rhs, parsed, label: 'Explicit Surface z = f(x,y)' };
+      return { kind: 'surface_explicit', expr: rhs, parsed, label: '3D Surface z = f(x,y)', is2D: false };
     }
     if (rhs === 'z' && !/\bz\b/.test(lhs)) {
       const parsed = MathEngine.parse(lhs);
-      return { kind: 'surface_explicit', expr: lhs, parsed, label: 'Explicit Surface z = f(x,y)' };
+      return { kind: 'surface_explicit', expr: lhs, parsed, label: '3D Surface z = f(x,y)', is2D: false };
     }
 
     const diffExpr = `(${lhs}) - (${rhs})`;
     const parsed = MathEngine.parse(diffExpr);
     const hasZ = parsed.vars.includes('z');
     if (!hasZ && appMode !== 'implicit') {
-      return { kind: 'implicit2d', expr: diffExpr, parsed, label: '2D Implicit Conic / Curve F(x,y) = 0' };
+      return { kind: 'implicit2d', expr: diffExpr, parsed, label: '2D Implicit Conic F(x,y) = 0', is2D: true };
     }
-    return { kind: 'implicit3d', expr: diffExpr, parsed, label: '3D Implicit Surface F(x,y,z) = 0' };
+    return { kind: 'implicit3d', expr: diffExpr, parsed, label: '3D Implicit Surface F(x,y,z) = 0', is2D: false };
   } else {
     const parsed = MathEngine.parse(raw);
     if (parsed.vars.includes('z')) {
-      return { kind: 'implicit3d', expr: raw, parsed, label: '3D Implicit Surface F(x,y,z) = 0' };
+      return { kind: 'implicit3d', expr: raw, parsed, label: '3D Implicit Surface F(x,y,z) = 0', is2D: false };
     }
     if (parsed.vars.includes('y')) {
-      return { kind: 'surface_explicit', expr: raw, parsed, label: 'Explicit Surface z = f(x,y)' };
+      return { kind: 'surface_explicit', expr: raw, parsed, label: '3D Surface z = f(x,y)', is2D: false };
     }
-    return { kind: 'curve2d', expr: raw, parsed, label: '2D Curve y = f(x)' };
+    return { kind: 'curve2d', expr: raw, parsed, label: '2D Function y = f(x)', is2D: true };
   }
 }
 
 /* ============================================================================
-   7. GEOMETRY GENERATORS (VIBRANT SURFACES, TUBULAR CURVES, MARCHING CUBES)
+   7. GEOMETRY GENERATORS (CRISP TUBES FOR CURVES, VIBRANT SURFACES)
    ============================================================================ */
 
 // 7A. Explicit 3D Surface z = f(x,y)
 function buildExplicitSurfaceMesh(parsedFn, L, N, colormap, opacity, wireOn, fixedColor = null) {
-  const zClip = L * 3.0;
+  const zClip = L * 2.5;
   const positions = [];
   const colors = [];
   const indices = [];
@@ -1470,7 +1579,7 @@ function buildExplicitSurfaceMesh(parsedFn, L, N, colormap, opacity, wireOn, fix
     }
   }
 
-  const maxStepJump = L * 1.65;
+  const maxStepJump = L * 1.5;
   for (let i = 0; i < N; i++) {
     for (let j = 0; j < N; j++) {
       const a = i * (N + 1) + j;
@@ -1503,8 +1612,7 @@ function buildExplicitSurfaceMesh(parsedFn, L, N, colormap, opacity, wireOn, fix
     side: THREE.DoubleSide,
     transparent: opacity < 0.99,
     opacity: opacity,
-    shininess: 70,
-    specular: new THREE.Color(0x334155)
+    shininess: 55
   });
   const mesh = new THREE.Mesh(geo, mat);
   mesh.userData = { type: 'surface', parsedFn };
@@ -1520,7 +1628,7 @@ function buildExplicitSurfaceMesh(parsedFn, L, N, colormap, opacity, wireOn, fix
   return { group: container, zMin, zMax };
 }
 
-// 7B. 3D Implicit Isosurface F(x,y,z) = 0
+// 7B. 3D Implicit Surface F(x,y,z) = 0
 function buildImplicitSurface3D(parsedFn, L, N, colormap, opacity, wireOn, fixedColor = null) {
   const res = Math.min(48, Math.max(24, Math.floor(N * 0.55)));
   const size = res + 1;
@@ -1606,10 +1714,11 @@ function buildImplicitSurface3D(parsedFn, L, N, colormap, opacity, wireOn, fixed
           if (inside.length === 0 || inside.length === 4) continue;
           if (inside.length === 1) {
             const i0 = inside[0];
-            const e1 = interp(cPts[i0], cPts[outside[0]], cVals[i0], cVals[outside[0]]);
-            const e2 = interp(cPts[i0], cPts[outside[1]], cVals[i0], cVals[outside[1]]);
-            const e3 = interp(cPts[i0], cPts[outside[2]], cVals[i0], cVals[outside[2]]);
-            pushTriangle(e1, e2, e3);
+            pushTriangle(
+              interp(cPts[i0], cPts[outside[0]], cVals[i0], cVals[outside[0]]),
+              interp(cPts[i0], cPts[outside[1]], cVals[i0], cVals[outside[1]]),
+              interp(cPts[i0], cPts[outside[2]], cVals[i0], cVals[outside[2]])
+            );
           } else if (inside.length === 3) {
             const o0 = outside[0];
             const e1 = interp(cPts[o0], cPts[inside[0]], cVals[o0], cVals[inside[0]]);
@@ -1617,8 +1726,7 @@ function buildImplicitSurface3D(parsedFn, L, N, colormap, opacity, wireOn, fixed
             const e3 = interp(cPts[o0], cPts[inside[2]], cVals[o0], cVals[inside[2]]);
             pushTriangle(e1, e3, e2);
           } else if (inside.length === 2) {
-            const i0 = inside[0], i1 = inside[1];
-            const o0 = outside[0], o1 = outside[1];
+            const i0 = inside[0], i1 = inside[1], o0 = outside[0], o1 = outside[1];
             const a = interp(cPts[i0], cPts[o0], cVals[i0], cVals[o0]);
             const b = interp(cPts[i0], cPts[o1], cVals[i0], cVals[o1]);
             const c = interp(cPts[i1], cPts[o0], cVals[i1], cVals[o0]);
@@ -1641,7 +1749,7 @@ function buildImplicitSurface3D(parsedFn, L, N, colormap, opacity, wireOn, fixed
     side: THREE.DoubleSide,
     transparent: opacity < 0.99,
     opacity: opacity,
-    shininess: 70
+    shininess: 65
   });
   const mesh = new THREE.Mesh(geo, mat);
   mesh.userData = { type: 'implicit', parsedFn };
@@ -1658,7 +1766,7 @@ function buildImplicitSurface3D(parsedFn, L, N, colormap, opacity, wireOn, fixed
 }
 
 // 7C. 2D Implicit Curve / Conic Section F(x,y) = 0
-function buildImplicitCurve2D(parsedFn, L, N, colorHex = 0x38bdf8, zOffset = 0.02) {
+function buildImplicitCurve2D(parsedFn, L, N, colorHex = 0x00d2ff, zOffset = 0.015) {
   const res = Math.max(90, N * 2);
   const size = res + 1;
   const grid = new Float32Array(size * size);
@@ -1696,36 +1804,32 @@ function buildImplicitCurve2D(parsedFn, L, N, colorHex = 0x38bdf8, zOffset = 0.0
     }
   }
   const geo = new THREE.BufferGeometry().setFromPoints(points);
-  const mat = new THREE.LineBasicMaterial({ color: colorHex, linewidth: 3 });
+  const mat = new THREE.LineBasicMaterial({ color: colorHex });
   const segs = new THREE.LineSegments(geo, mat);
   segs.userData = { type: 'conic2d', parsedFn };
   interactiveMeshes.push(segs);
   return segs;
 }
 
-// 7D. Vibrant Glowing 3D Tubular Curve for y = f(x) so 2D curves never look dull or thin
-function buildCurve2D(parsedFn, L, colorHex = 0x38bdf8, zElevation = 0.02, tubeRadius = 0.055) {
+// 7D. Crisp 1D Curve y = f(x) with Controlled Fine Tube Radius & Invisible Hit-Target
+function buildCurve2D(parsedFn, L, colorHex = 0x00d2ff, zElevation = 0.015) {
   const group = new THREE.Group();
-  const samples = 500;
+  const samples = 600;
   let currentSegment = [];
   const yClip = L * 1.35;
   let prevY = null;
+  const tubeRadius = parseFloat(document.getElementById('ctrl-curve-thick').value) || 0.025;
 
   function flushSegment() {
     if (currentSegment.length > 1) {
-      const curve = new THREE.CatmullRomCurve3(currentSegment);
-      const segCount = Math.min(350, currentSegment.length * 2);
-      const tubeGeo = new THREE.TubeGeometry(curve, segCount, tubeRadius, 12, false);
-      const tubeMat = new THREE.MeshPhongMaterial({
-        color: colorHex,
-        emissive: colorHex,
-        emissiveIntensity: 0.35,
-        shininess: 90
-      });
-      const mesh = new THREE.Mesh(tubeGeo, tubeMat);
-      mesh.userData = { type: 'curve2d', parsedFn };
-      group.add(mesh);
-      interactiveMeshes.push(mesh);
+      const curvePath = new THREE.CatmullRomCurve3(currentSegment);
+      const segs = Math.min(350, currentSegment.length * 2);
+      const tubeGeo = new THREE.TubeGeometry(curvePath, segs, tubeRadius, 8, false);
+      const tubeMat = new THREE.MeshBasicMaterial({ color: colorHex });
+      const tubeMesh = new THREE.Mesh(tubeGeo, tubeMat);
+      tubeMesh.userData = { type: 'curve2d', parsedFn };
+      group.add(tubeMesh);
+      interactiveMeshes.push(tubeMesh);
     }
     currentSegment = [];
   }
@@ -1745,26 +1849,8 @@ function buildCurve2D(parsedFn, L, colorHex = 0x38bdf8, zElevation = 0.02, tubeR
   return group;
 }
 
-// Helper for crisp, glowing point markers (Roots, Extrema, Probe)
-function createGlowingMarker(positionVec, colorHex = 0x38bdf8, radius = 0.085) {
-  const markerGroup = new THREE.Group();
-  markerGroup.position.copy(positionVec);
-
-  // Bright inner core
-  const coreGeo = new THREE.SphereGeometry(radius, 20, 20);
-  const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-  markerGroup.add(new THREE.Mesh(coreGeo, coreMat));
-
-  // Colored glowing shell
-  const haloGeo = new THREE.SphereGeometry(radius * 1.65, 20, 20);
-  const haloMat = new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0.55, depthWrite: false });
-  markerGroup.add(new THREE.Mesh(haloGeo, haloMat));
-
-  return markerGroup;
-}
-
 /* ============================================================================
-   8. MAIN PLOT DISPATCHER & MULTI-MODE VISUALISATION ENGINE
+   8. MAIN PLOT DISPATCHER & AUTOMATIC 2D/3D VIEW SELECTION
    ============================================================================ */
 function evaluateAndPlot() {
   const errBox = document.getElementById('error-box');
@@ -1781,12 +1867,16 @@ function evaluateAndPlot() {
   const opacity = parseFloat(document.getElementById('ctrl-opacity').value);
   const wireOn = document.getElementById('chk-wireframe').checked;
 
-  // Build axes only if L or visibility changed (prevents any axis flicker!)
-  buildCoordinateAxes(L, false);
   const legendList = [];
 
   try {
     if (appMode === 'parametric') {
+      if (lastAutoKind !== 'parametric') {
+        lastAutoKind = 'parametric';
+        setDimensionView('3D', false);
+      } else {
+        buildCoordinateAxes(L);
+      }
       const sub = document.getElementById('param-subtype').value;
       const px = MathEngine.parse(document.getElementById('param-x').value);
       const py = MathEngine.parse(document.getElementById('param-y').value);
@@ -1810,8 +1900,9 @@ function evaluateAndPlot() {
         }
         if (pts.length > 1) {
           const curve = new THREE.CatmullRomCurve3(pts);
-          const tubeGeo = new THREE.TubeGeometry(curve, 320, 0.065, 14, false);
-          const tubeMat = new THREE.MeshPhongMaterial({ color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 0.3, shininess: 90 });
+          const tubeRadius = parseFloat(document.getElementById('ctrl-curve-thick').value) || 0.035;
+          const tubeGeo = new THREE.TubeGeometry(curve, 320, tubeRadius * 1.4, 10, false);
+          const tubeMat = new THREE.MeshPhongMaterial({ color: 0x00d2ff, shininess: 80 });
           const mesh = new THREE.Mesh(tubeGeo, tubeMat);
           plotGroup.add(mesh);
           interactiveMeshes.push(mesh);
@@ -1823,18 +1914,20 @@ function evaluateAndPlot() {
         const env0 = { ...currentParams, t: t0, u: t0 };
         const x0 = px.evaluate(env0, useDegrees), y0 = py.evaluate(env0, useDegrees), z0 = pz.evaluate(env0, useDegrees);
         if (!isNaN(x0) && !isNaN(y0) && !isNaN(z0)) {
-          plotGroup.add(createGlowingMarker(new THREE.Vector3(x0, y0, z0), 0xfacc15, 0.09));
+          const sph = createCrispMarker(0xffb703, 0.14);
+          sph.position.set(x0, y0, z0);
+          plotGroup.add(sph);
           const vecLen = Math.hypot(x0, y0, z0);
           if (vecLen > 0.05) {
             const dir = new THREE.Vector3(x0, y0, z0).normalize();
-            plotGroup.add(new THREE.ArrowHelper(dir, new THREE.Vector3(0,0,0), vecLen, 0xfacc15, 0.3, 0.16));
+            plotGroup.add(new THREE.ArrowHelper(dir, new THREE.Vector3(0,0,0), vecLen, 0xffb703, 0.3, 0.16));
           }
           updateExplanation('3D Parametric Space Curve r(t)',
             'Traces a particle position vector r(t) = (x(t), y(t), z(t)) through 3D space as parameter t varies.',
             `r(${t0.toFixed(2)}) = (${x0.toFixed(2)}, ${y0.toFixed(2)}, ${z0.toFixed(2)}) | |r| = ${vecLen.toFixed(2)}`);
         }
-        legendList.push({ color: '#38bdf8', text: `r(t) = (${document.getElementById('param-x').value}, ...)` });
-        legendList.push({ color: '#facc15', text: 'Position Vector r(t₀)' });
+        legendList.push({ color: '#00d2ff', text: `r(t) = (${document.getElementById('param-x').value}, ...)` });
+        legendList.push({ color: '#ffb703', text: 'Position Vector r(t₀)' });
       } else {
         document.getElementById('detected-type-badge').textContent = '3D Parametric Surface r(u,v)';
         const vMin = parseFloat(document.getElementById('param-vmin').value) || 0;
@@ -1882,6 +1975,15 @@ function evaluateAndPlot() {
     const classified = classifyEquation(mainEqStr);
     document.getElementById('detected-type-badge').textContent = classified.label;
 
+    // Auto-switch between Dedicated 2D Plane View and 3D Space View when equation type changes
+    const targetDim = classified.is2D ? '2D' : '3D';
+    if (lastAutoKind !== classified.kind) {
+      lastAutoKind = classified.kind;
+      setDimensionView(targetDim, false);
+    } else {
+      buildCoordinateAxes(L);
+    }
+
     let allParams = [...classified.parsed.params];
     let compClassified = null;
     if (document.getElementById('chk-compare').checked) {
@@ -1900,19 +2002,19 @@ function evaluateAndPlot() {
     } else if (classified.kind === 'implicit3d' || (appMode === 'implicit' && classified.kind !== 'implicit2d')) {
       const impGroup = buildImplicitSurface3D(classified.parsed, L, N, colormap, opacity, wireOn);
       plotGroup.add(impGroup);
-      legendList.push({ color: '#38bdf8', text: mainEqStr });
+      legendList.push({ color: '#00d2ff', text: mainEqStr });
       updateExplanation(`Implicit Surface (${mainEqStr})`,
         'Rendered in 3D as the zero isosurface F(x, y, z) = 0 using Marching Tetrahedra.',
         `Domain: [-${L}, ${L}]³ | Grid: ${Math.min(48, Math.floor(N*0.55))}³ voxels`);
     } else if (classified.kind === 'implicit2d') {
-      plotGroup.add(buildImplicitCurve2D(classified.parsed, L, N, 0x38bdf8));
-      legendList.push({ color: '#38bdf8', text: `Conic / Implicit Curve: ${mainEqStr}` });
+      plotGroup.add(buildImplicitCurve2D(classified.parsed, L, N, 0x00d2ff));
+      legendList.push({ color: '#00d2ff', text: `Conic / Implicit Curve: ${mainEqStr}` });
       updateExplanation(`Planar Conic / Implicit Curve (${mainEqStr})`,
-        'Embedded in the 3D xy-plane (z = 0) showing all points satisfying F(x, y) = 0.',
+        'Displayed in dedicated 2D X-Y View showing all points satisfying F(x, y) = 0.',
         'Modify parameters (a, b, r) in the Parameter Playground to inspect eccentricity and scale.');
     } else if (classified.kind === 'curve2d') {
-      plotGroup.add(buildCurve2D(classified.parsed, L, 0x38bdf8, 0.02, 0.055));
-      legendList.push({ color: '#38bdf8', text: mainEqStr });
+      plotGroup.add(buildCurve2D(classified.parsed, L, 0x00d2ff, 0.015));
+      legendList.push({ color: '#00d2ff', text: mainEqStr });
       if (appMode === 'calculus') {
         renderCalculus1D(classified.parsed, L, legendList);
       } else if (appMode === 'integral') {
@@ -1920,14 +2022,14 @@ function evaluateAndPlot() {
       } else if (appMode === 'roots') {
         renderRootsAndExtrema1D(classified.parsed, L, legendList);
       } else {
-        updateExplanation(`Planar Curve (${mainEqStr})`,
-          'Plotted strictly as a 1D curve y = f(x) in the xy-plane (z = 0) with vibrant 3D tubular shading.',
-          'Switch to Calculus, Integrals, or Roots tabs above to inspect tangents, area, and zeros.');
+        updateExplanation(`2D Function Curve (${mainEqStr})`,
+          'Automatically locked to high-contrast 2D (X-Y) View so you can inspect coordinates, intercepts, and curvature clearly. Click "3D View" in the top bar anytime to rotate in 3D space.',
+          'Pan with Left-Click Drag | Zoom with Mouse Wheel | Hover on curve to read exact (x, y) & slope.');
       }
     } else if (classified.kind === 'surface_explicit') {
       const { group } = buildExplicitSurfaceMesh(classified.parsed, L, N, colormap, opacity, wireOn);
       plotGroup.add(group);
-      legendList.push({ color: '#38bdf8', text: mainEqStr });
+      legendList.push({ color: '#00d2ff', text: mainEqStr });
 
       if (appMode === 'function') {
         renderFunctionCrossSections(classified.parsed, L, legendList);
@@ -1942,18 +2044,18 @@ function evaluateAndPlot() {
 
     if (compClassified) {
       if (compClassified.kind === 'surface_explicit') {
-        const compSurf = buildExplicitSurfaceMesh(compClassified.parsed, L, N, 'cool', opacity * 0.78, false, 0xf43f5e);
+        const compSurf = buildExplicitSurfaceMesh(compClassified.parsed, L, N, 'cool', opacity * 0.78, false, 0xff4d6d);
         plotGroup.add(compSurf.group);
-        legendList.push({ color: '#f43f5e', text: `Compare: ${document.getElementById('eq-compare').value}` });
+        legendList.push({ color: '#ff4d6d', text: `Compare: ${document.getElementById('eq-compare').value}` });
         if (appMode === 'roots' && classified.kind === 'surface_explicit') {
           renderTwoSurfaceIntersection(classified.parsed, compClassified.parsed, L, N, legendList);
         }
       } else if (compClassified.kind === 'curve2d') {
-        plotGroup.add(buildCurve2D(compClassified.parsed, L, 0xf43f5e, 0.04, 0.05));
-        legendList.push({ color: '#f43f5e', text: `Compare: ${document.getElementById('eq-compare').value}` });
+        plotGroup.add(buildCurve2D(compClassified.parsed, L, 0xff4d6d, 0.025));
+        legendList.push({ color: '#ff4d6d', text: `Compare: ${document.getElementById('eq-compare').value}` });
       } else if (compClassified.kind === 'implicit3d') {
-        plotGroup.add(buildImplicitSurface3D(compClassified.parsed, L, N, 'thermal', opacity * 0.7, false, 0xf43f5e));
-        legendList.push({ color: '#f43f5e', text: `Compare: ${document.getElementById('eq-compare').value}` });
+        plotGroup.add(buildImplicitSurface3D(compClassified.parsed, L, N, 'thermal', opacity * 0.7, false, 0xff4d6d));
+        legendList.push({ color: '#ff4d6d', text: `Compare: ${document.getElementById('eq-compare').value}` });
       }
     }
 
@@ -1962,6 +2064,22 @@ function evaluateAndPlot() {
     errBox.style.display = 'block';
     errBox.textContent = `Math Engine Error: ${err.message}`;
   }
+}
+
+/* Crisp Glowing Point Marker Helper (Replaces the huge dull circle) */
+function createCrispMarker(colorHex = 0x00f59b, radius = 0.095) {
+  const grp = new THREE.Group();
+  const core = new THREE.Mesh(
+    new THREE.SphereGeometry(radius, 18, 18),
+    new THREE.MeshBasicMaterial({ color: 0xffffff })
+  );
+  const halo = new THREE.Mesh(
+    new THREE.SphereGeometry(radius * 1.65, 18, 18),
+    new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0.85 })
+  );
+  grp.add(halo);
+  grp.add(core);
+  return grp;
 }
 
 /* ============================================================================
@@ -1976,41 +2094,41 @@ function renderFunctionCrossSections(parsedFn, L, legendList) {
 
   if (showX) {
     const planeGeo = new THREE.PlaneGeometry(2 * L, 2 * L);
-    const planeMat = new THREE.MeshBasicMaterial({ color: 0xfacc15, side: THREE.DoubleSide, transparent: true, opacity: 0.14 });
+    const planeMat = new THREE.MeshBasicMaterial({ color: 0xffb703, side: THREE.DoubleSide, transparent: true, opacity: 0.14 });
     const plane = new THREE.Mesh(planeGeo, planeMat);
     plane.rotation.y = Math.PI / 2;
     plane.position.set(x0, 0, 0);
     plotGroup.add(plane);
 
     const pts = [];
-    for (let i = 0; i <= 150; i++) {
-      const y = -L + (2 * L * i) / 150;
+    for (let i = 0; i <= 160; i++) {
+      const y = -L + (2 * L * i) / 160;
       const z = parsedFn.evaluate({ ...currentParams, x: x0, y, t: animTime }, useDegrees);
-      if (!isNaN(z) && Math.abs(z) <= L * 3) pts.push(new THREE.Vector3(x0, y, z));
+      if (!isNaN(z) && Math.abs(z) <= L * 2.5) pts.push(new THREE.Vector3(x0, y, z));
     }
     if (pts.length > 1) {
-      plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xfacc15, linewidth: 4 })));
-      legendList.push({ color: '#facc15', text: `Cross-Section x = ${x0.toFixed(1)}` });
+      plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xffb703 })));
+      legendList.push({ color: '#ffb703', text: `Cross-Section x = ${x0.toFixed(1)}` });
     }
   }
 
   if (showY) {
     const planeGeo = new THREE.PlaneGeometry(2 * L, 2 * L);
-    const planeMat = new THREE.MeshBasicMaterial({ color: 0x22c55e, side: THREE.DoubleSide, transparent: true, opacity: 0.14 });
+    const planeMat = new THREE.MeshBasicMaterial({ color: 0x00f59b, side: THREE.DoubleSide, transparent: true, opacity: 0.14 });
     const plane = new THREE.Mesh(planeGeo, planeMat);
     plane.rotation.x = Math.PI / 2;
     plane.position.set(0, y0, 0);
     plotGroup.add(plane);
 
     const pts = [];
-    for (let i = 0; i <= 150; i++) {
-      const x = -L + (2 * L * i) / 150;
+    for (let i = 0; i <= 160; i++) {
+      const x = -L + (2 * L * i) / 160;
       const z = parsedFn.evaluate({ ...currentParams, x, y: y0, t: animTime }, useDegrees);
-      if (!isNaN(z) && Math.abs(z) <= L * 3) pts.push(new THREE.Vector3(x, y0, z));
+      if (!isNaN(z) && Math.abs(z) <= L * 2.5) pts.push(new THREE.Vector3(x, y0, z));
     }
     if (pts.length > 1) {
-      plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0x22c55e, linewidth: 4 })));
-      legendList.push({ color: '#22c55e', text: `Cross-Section y = ${y0.toFixed(1)}` });
+      plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0x00f59b })));
+      legendList.push({ color: '#00f59b', text: `Cross-Section y = ${y0.toFixed(1)}` });
     }
   }
 
@@ -2045,50 +2163,51 @@ function renderCalculus1D(parsedFn, L, legendList) {
   const secondDeriv = (yp - 2 * y0 + ym) / (h * h);
 
   if (!isNaN(y0) && !isNaN(slope)) {
-    plotGroup.add(createGlowingMarker(new THREE.Vector3(x0, y0, 0.06), 0x22c55e, 0.08));
+    const ptMesh = createCrispMarker(0x00f59b, 0.09);
+    ptMesh.position.set(x0, y0, 0.04);
+    plotGroup.add(ptMesh);
 
     const dx = 2.4;
-    const tPts = [
-      new THREE.Vector3(x0 - dx, y0 - slope * dx, 0.05),
-      new THREE.Vector3(x0 + dx, y0 + slope * dx, 0.05)
-    ];
-    const tCurve = new THREE.LineCurve3(tPts[0], tPts[1]);
-    plotGroup.add(new THREE.Mesh(new THREE.TubeGeometry(tCurve, 1, 0.04, 10, false), new THREE.MeshBasicMaterial({ color: 0x22c55e })));
-    legendList.push({ color: '#22c55e', text: `Tangent at x₀=${x0.toFixed(2)} (m=${slope.toFixed(2)})` });
+    const tCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(x0 - dx, y0 - slope * dx, 0.03),
+      new THREE.Vector3(x0 + dx, y0 + slope * dx, 0.03)
+    ]);
+    plotGroup.add(new THREE.Mesh(new THREE.TubeGeometry(tCurve, 12, 0.022, 8, false), new THREE.MeshBasicMaterial({ color: 0x00f59b })));
+    legendList.push({ color: '#00f59b', text: `Tangent at x₀=${x0.toFixed(2)} (m=${slope.toFixed(2)})` });
   }
 
   if (document.getElementById('chk-show-f1').checked) {
     const pts1 = [];
-    for (let i = 0; i <= 300; i++) {
-      const x = -L + (2 * L * i) / 300;
+    for (let i = 0; i <= 350; i++) {
+      const x = -L + (2 * L * i) / 350;
       const d1 = (parsedFn.evaluate({ ...currentParams, x: x + h, t: animTime }, useDegrees) - parsedFn.evaluate({ ...currentParams, x: x - h, t: animTime }, useDegrees)) / (2 * h);
-      if (!isNaN(d1) && Math.abs(d1) < L * 1.35) pts1.push(new THREE.Vector3(x, d1, 0.03));
+      if (!isNaN(d1) && Math.abs(d1) < L * 1.35) pts1.push(new THREE.Vector3(x, d1, 0.02));
     }
     if (pts1.length > 1) {
-      plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts1), new THREE.LineBasicMaterial({ color: 0xf59e0b, linewidth: 2 })));
-      legendList.push({ color: '#f59e0b', text: "First Derivative f'(x)" });
+      plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts1), new THREE.LineBasicMaterial({ color: 0xffb703 })));
+      legendList.push({ color: '#ffb703', text: "First Derivative f'(x)" });
     }
   }
 
   if (document.getElementById('chk-show-f2').checked) {
     const pts2 = [];
-    for (let i = 0; i <= 300; i++) {
-      const x = -L + (2 * L * i) / 300;
+    for (let i = 0; i <= 350; i++) {
+      const x = -L + (2 * L * i) / 350;
       const f0 = parsedFn.evaluate({ ...currentParams, x, t: animTime }, useDegrees);
       const fp = parsedFn.evaluate({ ...currentParams, x: x + h, t: animTime }, useDegrees);
       const fm = parsedFn.evaluate({ ...currentParams, x: x - h, t: animTime }, useDegrees);
       const d2 = (fp - 2 * f0 + fm) / (h * h);
-      if (!isNaN(d2) && Math.abs(d2) < L * 1.35) pts2.push(new THREE.Vector3(x, d2, 0.04));
+      if (!isNaN(d2) && Math.abs(d2) < L * 1.35) pts2.push(new THREE.Vector3(x, d2, 0.02));
     }
     if (pts2.length > 1) {
-      plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts2), new THREE.LineBasicMaterial({ color: 0xa855f7, linewidth: 2 })));
+      plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts2), new THREE.LineBasicMaterial({ color: 0xa855f7 })));
       legendList.push({ color: '#a855f7', text: "Second Derivative f''(x)" });
     }
   }
 
   const concavity = secondDeriv > 0.05 ? 'Concave Up (∪)' : (secondDeriv < -0.05 ? 'Concave Down (∩)' : 'Inflection / Linear');
   updateExplanation('Differential Calculus Explorer (1D)',
-    'The first derivative f\'(x₀) gives the instantaneous slope of the green tangent line. The second derivative f\'\'(x₀) measures curvature (rate of change of slope).',
+    'The first derivative f\'(x₀) gives the instantaneous slope of the green tangent line. The second derivative f\'\'(x₀) measures curvature.',
     `x₀ = ${x0.toFixed(2)} | f(x₀) = ${y0.toFixed(3)} | Slope f'(x₀) = ${slope.toFixed(3)} | f''(x₀) = ${secondDeriv.toFixed(3)} (${concavity})`);
 }
 
@@ -2103,38 +2222,40 @@ function renderCalculus2DPartials(parsedFn, L, legendList) {
   const fy = (parsedFn.evaluate({ ...currentParams, x: x0, y: y0 + h, t: animTime }, useDegrees) - parsedFn.evaluate({ ...currentParams, x: x0, y: y0 - h, t: animTime }, useDegrees)) / (2 * h);
 
   const origin = new THREE.Vector3(x0, y0, z0);
-  plotGroup.add(createGlowingMarker(origin, 0x38bdf8, 0.09));
+  const marker = createCrispMarker(0x00d2ff, 0.11);
+  marker.position.copy(origin);
+  plotGroup.add(marker);
 
   const tx = new THREE.Vector3(1, 0, fx).normalize();
-  plotGroup.add(new THREE.ArrowHelper(tx, origin, 1.8, 0xfacc15, 0.28, 0.16));
-  legendList.push({ color: '#facc15', text: `x-Tangent (∂f/∂x = ${fx.toFixed(2)})` });
+  plotGroup.add(new THREE.ArrowHelper(tx, origin, 1.8, 0xffb703, 0.28, 0.16));
+  legendList.push({ color: '#ffb703', text: `x-Tangent (∂f/∂x = ${fx.toFixed(2)})` });
 
   const ty = new THREE.Vector3(0, 1, fy).normalize();
-  plotGroup.add(new THREE.ArrowHelper(ty, origin, 1.8, 0x22c55e, 0.28, 0.16));
-  legendList.push({ color: '#22c55e', text: `y-Tangent (∂f/∂y = ${fy.toFixed(2)})` });
+  plotGroup.add(new THREE.ArrowHelper(ty, origin, 1.8, 0x00f59b, 0.28, 0.16));
+  legendList.push({ color: '#00f59b', text: `y-Tangent (∂f/∂y = ${fy.toFixed(2)})` });
 
   if (document.getElementById('chk-probe-vec').checked) {
     const norm = new THREE.Vector3(-fx, -fy, 1).normalize();
-    plotGroup.add(new THREE.ArrowHelper(norm, origin, 1.8, 0xf43f5e, 0.28, 0.16));
-    legendList.push({ color: '#f43f5e', text: 'Surface Normal n' });
+    plotGroup.add(new THREE.ArrowHelper(norm, origin, 1.8, 0xff4d6d, 0.28, 0.16));
+    legendList.push({ color: '#ff4d6d', text: 'Surface Normal n' });
   }
 
   const gradMag = Math.hypot(fx, fy);
   updateExplanation('Partial Derivatives & Gradient Explorer',
-    '∂f/∂x measures the slope when moving strictly parallel to the x-axis (yellow vector), while ∂f/∂y measures the slope along the y-axis (green vector). Together they span the tangent plane.',
+    '∂f/∂x measures the slope when moving parallel to the x-axis (amber vector), while ∂f/∂y measures the slope along the y-axis (green vector).',
     `At (${x0.toFixed(2)}, ${y0.toFixed(2)}, ${z0.toFixed(2)}): ∂f/∂x = ${fx.toFixed(3)}, ∂f/∂y = ${fy.toFixed(3)} | |∇f| = ${gradMag.toFixed(3)}`);
 }
 
 function renderFirstOrderODE(parsedFn, L, legendList) {
-  const step = L / 7;
+  const step = 1.0;
   for (let x = -L; x <= L; x += step) {
     for (let y = -L; y <= L; y += step) {
       const m = parsedFn.evaluate({ ...currentParams, x, y, t: animTime }, useDegrees);
       if (isNaN(m)) continue;
-      const len = step * 0.38;
+      const len = 0.34;
       const dx = len / Math.sqrt(1 + m * m);
       const dy = m * dx;
-      const pts = [new THREE.Vector3(x - dx, y - dy, 0), new THREE.Vector3(x + dx, y + dy, 0)];
+      const pts = [new THREE.Vector3(x - dx, y - dy, 0.01), new THREE.Vector3(x + dx, y + dy, 0.01)];
       plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0x64748b })));
     }
   }
@@ -2142,14 +2263,16 @@ function renderFirstOrderODE(parsedFn, L, legendList) {
 
   const x0 = parseFloat(document.getElementById('rng-calc-x').value);
   const y0 = parseFloat(document.getElementById('rng-calc-y').value);
-  plotGroup.add(createGlowingMarker(new THREE.Vector3(x0, y0, 0.06), 0xfacc15, 0.085));
+  const icSphere = createCrispMarker(0xffb703, 0.1);
+  icSphere.position.set(x0, y0, 0.04);
+  plotGroup.add(icSphere);
 
   function solveRK4(dir) {
-    const pts = [new THREE.Vector3(x0, y0, 0.05)];
+    const pts = [new THREE.Vector3(x0, y0, 0.03)];
     let cx = x0, cy = y0;
     const h = dir * 0.04;
-    for (let i = 0; i < 300; i++) {
-      if (Math.abs(cx) > L || Math.abs(cy) > L * 1.35) break;
+    for (let i = 0; i < 350; i++) {
+      if (Math.abs(cx) > L || Math.abs(cy) > L * 1.25) break;
       const k1 = parsedFn.evaluate({ ...currentParams, x: cx, y: cy }, useDegrees);
       const k2 = parsedFn.evaluate({ ...currentParams, x: cx + 0.5*h, y: cy + 0.5*h*k1 }, useDegrees);
       const k3 = parsedFn.evaluate({ ...currentParams, x: cx + 0.5*h, y: cy + 0.5*h*k2 }, useDegrees);
@@ -2157,7 +2280,7 @@ function renderFirstOrderODE(parsedFn, L, legendList) {
       if ([k1, k2, k3, k4].some(isNaN)) break;
       cy += (h / 6) * (k1 + 2*k2 + 2*k3 + k4);
       cx += h;
-      pts.push(new THREE.Vector3(cx, cy, 0.05));
+      pts.push(new THREE.Vector3(cx, cy, 0.03));
     }
     return pts;
   }
@@ -2166,8 +2289,8 @@ function renderFirstOrderODE(parsedFn, L, legendList) {
   const fullCurve = [...bwd, ...fwd];
   if (fullCurve.length > 1) {
     const curve = new THREE.CatmullRomCurve3(fullCurve);
-    plotGroup.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 200, 0.05, 10, false), new THREE.MeshPhongMaterial({ color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 0.3 })));
-    legendList.push({ color: '#38bdf8', text: `RK4 Solution through (${x0.toFixed(1)}, ${y0.toFixed(1)})` });
+    plotGroup.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 240, 0.028, 8, false), new THREE.MeshBasicMaterial({ color: 0x00d2ff })));
+    legendList.push({ color: '#00d2ff', text: `RK4 Solution through (${x0.toFixed(1)}, ${y0.toFixed(1)})` });
   }
   updateExplanation('1st-Order Differential Equation (RK4 Numerical Solver)',
     'Displays the slope field dy/dx = f(x,y) and integrates the numerical solution curve using 4th-Order Runge-Kutta (RK4) from your movable initial condition (x₀, y₀).',
@@ -2184,7 +2307,7 @@ function renderSecondOrderODE(L, legendList) {
   let y = y0, v = v0, t = -L;
   const dt = 0.02;
   while (t <= L) {
-    dispPts.push(new THREE.Vector3(t, y, 0.04));
+    dispPts.push(new THREE.Vector3(t, y, 0.03));
     phasePts.push(new THREE.Vector3(t, y, v));
     const acc = (yy, vv) => -2 * zeta * omega * vv - omega * omega * yy;
     const k1y = v, k1v = acc(y, v);
@@ -2195,12 +2318,12 @@ function renderSecondOrderODE(L, legendList) {
     v += (dt / 6) * (k1v + 2*k2v + 2*k3v + k4v);
     t += dt;
   }
-  plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(dispPts), new THREE.LineBasicMaterial({ color: 0x38bdf8, linewidth: 3 })));
-  plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(phasePts), new THREE.LineBasicMaterial({ color: 0xa855f7, linewidth: 2 })));
-  legendList.push({ color: '#38bdf8', text: 'Displacement y(t) in XY Plane' });
+  plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(dispPts), new THREE.LineBasicMaterial({ color: 0x00d2ff })));
+  plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(phasePts), new THREE.LineBasicMaterial({ color: 0xa855f7 })));
+  legendList.push({ color: '#00d2ff', text: 'Displacement y(t) in XY Plane' });
   legendList.push({ color: '#a855f7', text: '3D Phase Trajectory (t, y, dy/dt)' });
   updateExplanation('2nd-Order Harmonic Oscillator ODE',
-    'Solves d²y/dt² + 2ζω(dy/dt) + ω²y = 0 numerically. The blue curve shows displacement y(t), while the purple 3D spiral shows the trajectory in (t, y, v) phase space.',
+    'Solves d²y/dt² + 2ζω(dy/dt) + ω²y = 0 numerically. The cyan curve shows displacement y(t), while the purple 3D spiral shows the trajectory in (t, y, v) phase space.',
     `IC: y₀ = ${y0.toFixed(2)}, v₀ = ${v0.toFixed(2)} | ω = ${omega.toFixed(2)}`);
 }
 
@@ -2209,7 +2332,7 @@ function renderIntegral1D(parsedFn, L, legendList) {
   let b = parseFloat(document.getElementById('rng-int-b').value);
   const signFactor = b >= a ? 1 : -1;
   const lo = Math.min(a, b), hi = Math.max(a, b);
-  const N = 120;
+  const N = 140;
   const dx = (hi - lo) / N;
   let simpsonSum = 0;
 
@@ -2222,21 +2345,21 @@ function renderIntegral1D(parsedFn, L, legendList) {
     if (!isNaN(y1) && !isNaN(y2) && !isNaN(ym)) {
       simpsonSum += (dx / 6) * (y1 + 4 * ym + y2);
       const target = ym >= 0 ? posVerts : negVerts;
-      target.push(x1, 0, 0, x2, 0, 0, x2, y2, 0, x1, 0, 0, x2, y2, 0, x1, y1, 0);
+      target.push(x1, 0, 0.005, x2, 0, 0.005, x2, y2, 0.005, x1, 0, 0.005, x2, y2, 0.005, x1, y1, 0.005);
     }
   }
 
   if (posVerts.length > 0) {
     const gPos = new THREE.BufferGeometry();
     gPos.setAttribute('position', new THREE.Float32BufferAttribute(posVerts, 3));
-    plotGroup.add(new THREE.Mesh(gPos, new THREE.MeshBasicMaterial({ color: 0x10b981, side: THREE.DoubleSide, transparent: true, opacity: 0.45 })));
-    legendList.push({ color: '#10b981', text: 'Positive Area (+ Accumulation)' });
+    plotGroup.add(new THREE.Mesh(gPos, new THREE.MeshBasicMaterial({ color: 0x00f59b, side: THREE.DoubleSide, transparent: true, opacity: 0.42 })));
+    legendList.push({ color: '#00f59b', text: 'Positive Area (+ Accumulation)' });
   }
   if (negVerts.length > 0) {
     const gNeg = new THREE.BufferGeometry();
     gNeg.setAttribute('position', new THREE.Float32BufferAttribute(negVerts, 3));
-    plotGroup.add(new THREE.Mesh(gNeg, new THREE.MeshBasicMaterial({ color: 0xef4444, side: THREE.DoubleSide, transparent: true, opacity: 0.45 })));
-    legendList.push({ color: '#ef4444', text: 'Negative Signed Area (- Accumulation)' });
+    plotGroup.add(new THREE.Mesh(gNeg, new THREE.MeshBasicMaterial({ color: 0xff4d6d, side: THREE.DoubleSide, transparent: true, opacity: 0.42 })));
+    legendList.push({ color: '#ff4d6d', text: 'Negative Signed Area (- Accumulation)' });
   }
 
   const netIntegral = signFactor * simpsonSum;
@@ -2264,7 +2387,7 @@ function renderIntegral2DVolume(parsedFn, L, legendList) {
       totalVol += z * dx * dy;
       const boxGeo = new THREE.BoxGeometry(dx * 0.9, dy * 0.9, h);
       const boxMat = new THREE.MeshPhongMaterial({
-        color: z >= 0 ? 0x10b981 : 0xef4444,
+        color: z >= 0 ? 0x00f59b : 0xff4d6d,
         transparent: true,
         opacity: 0.55
       });
@@ -2273,14 +2396,14 @@ function renderIntegral2DVolume(parsedFn, L, legendList) {
       plotGroup.add(colMesh);
     }
   }
-  legendList.push({ color: '#10b981', text: '2D Riemann Volume Columns' });
+  legendList.push({ color: '#00f59b', text: '2D Riemann Volume Columns' });
   updateExplanation('Double Integral Volume Explorer ∬ f(x,y) dA',
     'Approximates the signed volume between z = f(x,y) and the plane z = 0 over the rectangular domain [a, b] × [-c, c].',
     `Domain: x ∈ [${a.toFixed(1)}, ${b.toFixed(1)}], y ∈ [-${c.toFixed(1)}, ${c.toFixed(1)}] | Net Volume ≈ ${totalVol.toFixed(3)}`);
 }
 
 function renderRootsAndExtrema1D(parsedFn, L, legendList) {
-  const samples = 400;
+  const samples = 450;
   const roots = [], extrema = [];
   const h = 1e-4;
   const deriv = x => (parsedFn.evaluate({ ...currentParams, x: x + h, t: animTime }, useDegrees) - parsedFn.evaluate({ ...currentParams, x: x - h, t: animTime }, useDegrees)) / (2 * h);
@@ -2321,23 +2444,27 @@ function renderRootsAndExtrema1D(parsedFn, L, legendList) {
   }
 
   for (const rx of roots) {
-    plotGroup.add(createGlowingMarker(new THREE.Vector3(rx, 0, 0.06), 0xfacc15, 0.08));
+    const m = createCrispMarker(0xffb703, 0.09);
+    m.position.set(rx, 0, 0.05);
+    plotGroup.add(m);
   }
   for (const ex of extrema) {
-    const col = ex.type === 'Local Max' ? 0x10b981 : 0xf43f5e;
-    plotGroup.add(createGlowingMarker(new THREE.Vector3(ex.x, ex.y, 0.06), col, 0.08));
+    const col = ex.type === 'Local Max' ? 0x00f59b : 0xff4d6d;
+    const m = createCrispMarker(col, 0.09);
+    m.position.set(ex.x, ex.y, 0.05);
+    plotGroup.add(m);
   }
 
-  legendList.push({ color: '#facc15', text: `Roots f(x)=0 (${roots.length} found)` });
-  legendList.push({ color: '#10b981', text: `Candidate Extrema (${extrema.length} found)` });
+  legendList.push({ color: '#ffb703', text: `Roots f(x)=0 (${roots.length} found)` });
+  legendList.push({ color: '#00f59b', text: `Candidate Extrema (${extrema.length} found)` });
   updateExplanation('1D Roots & Critical Points Analysis',
-    'Calculates real zeros f(x) = 0 via bisection (yellow markers) and candidate local extrema where f\'(x) = 0 (green/red markers).',
+    'Calculates real zeros f(x) = 0 via bisection (amber markers) and candidate local extrema where f\'(x) = 0 (green/red markers).',
     `Roots: ${roots.map(r => r.toFixed(2)).join(', ') || 'None in domain'} | Extrema: ${extrema.map(e => `${e.type} (${e.x.toFixed(2)}, ${e.y.toFixed(2)})`).join('; ') || 'None'}`);
 }
 
 function renderSurfaceZeroContourAndExtrema(parsedFn, L, N, legendList) {
-  plotGroup.add(buildImplicitCurve2D(parsedFn, L, N, 0xfacc15, 0.03));
-  legendList.push({ color: '#facc15', text: 'Zero Contour z = f(x,y) = 0' });
+  plotGroup.add(buildImplicitCurve2D(parsedFn, L, N, 0xffb703, 0.03));
+  legendList.push({ color: '#ffb703', text: 'Zero Contour z = f(x,y) = 0' });
 
   const h = 1e-3;
   const found = [];
@@ -2369,9 +2496,9 @@ function renderSurfaceZeroContourAndExtrema(parsedFn, L, N, legendList) {
           let col = 0xa855f7;
           if (D > 0.01) {
             kind = fxx < 0 ? 'Local Max' : 'Local Min';
-            col = fxx < 0 ? 0x10b981 : 0xf43f5e;
+            col = fxx < 0 ? 0x00f59b : 0xff4d6d;
           }
-          if (!isNaN(cz) && Math.abs(cz) <= L * 3 && found.length < 12) {
+          if (!isNaN(cz) && Math.abs(cz) <= L * 2.5 && found.length < 12) {
             found.push({ x: cx, y: cy, z: cz, kind, col });
           }
         }
@@ -2380,11 +2507,13 @@ function renderSurfaceZeroContourAndExtrema(parsedFn, L, N, legendList) {
   }
 
   for (const pt of found) {
-    plotGroup.add(createGlowingMarker(new THREE.Vector3(pt.x, pt.y, pt.z), pt.col, 0.095));
+    const s = createCrispMarker(pt.col, 0.12);
+    s.position.set(pt.x, pt.y, pt.z);
+    plotGroup.add(s);
   }
   legendList.push({ color: '#a855f7', text: `Critical Points ∇f=0 (${found.length} found)` });
   updateExplanation('2D Zero Contour & Hessian Critical Point Classification',
-    'Highlights the z = 0 intersection curve in yellow and classifies candidate stationary points (∇f = 0) using the Hessian determinant D = fxx·fyy - fxy².',
+    'Highlights the z = 0 intersection curve in amber and classifies candidate stationary points (∇f = 0) using the Hessian determinant D = fxx·fyy - fxy².',
     found.map(p => `${p.kind} at (${p.x.toFixed(2)}, ${p.y.toFixed(2)}, ${p.z.toFixed(2)})`).slice(0, 3).join(' | ') || 'No stationary points found in domain');
 }
 
@@ -2425,7 +2554,7 @@ function renderTwoSurfaceIntersection(fn1, fn2, L, N, legendList) {
     }
   }
   if (pts.length > 1) {
-    plotGroup.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 4 })));
+    plotGroup.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xffffff })));
     legendList.push({ color: '#ffffff', text: '3D Surface Intersection Curve' });
   }
 }
@@ -2443,7 +2572,7 @@ function syncParameterSliders(paramNames) {
   const container = document.getElementById('dynamic-sliders-container');
   container.innerHTML = '';
   if (unique.length === 0) {
-    container.innerHTML = '<div style="font-size:11.5px; color:var(--text-muted);">Add parameters like <code>a, b, c, A, ω, φ</code> to your expression (e.g. <code>z = a*x² + b*y²</code>) to generate live sliders.</div>';
+    container.innerHTML = '<div style="font-size:11.5px; color:var(--text-muted);">Add parameters like <code>a, b, c, A, ω, φ</code> to your expression (e.g. <code>y = a*x² + b</code>) to generate live sliders.</div>';
     return;
   }
 
@@ -2480,7 +2609,7 @@ function resetParameters() {
 }
 
 /* ============================================================================
-   11. CRISP, COMPACT & GLOWING RAYCAST PROBE
+   11. SHARP RAYCASTING COORDINATE & TANGENT PROBE (SMALL GLOWING TARGET)
    ============================================================================ */
 function onCanvasMouseMove(event) {
   const rect = renderer.domElement.getBoundingClientRect();
@@ -2495,10 +2624,27 @@ function onCanvasMouseMove(event) {
   if (hits.length > 0) {
     const hit = hits[0];
     const p = hit.point;
-    // Compact, bright glowing probe point (radius 0.065 instead of oversized dull sphere)
-    probeGroup.add(createGlowingMarker(p, 0x38bdf8, 0.065));
-
     const uData = hit.object.userData;
+
+    if (uData && uData.type === 'curve2d' && uData.parsedFn) {
+      // Snap probe strictly to exact mathematical y = f(x) so there is zero tube-radius offset!
+      const exactX = p.x;
+      const exactY = uData.parsedFn.evaluate({ ...currentParams, x: exactX, t: animTime }, useDegrees);
+      if (!isNaN(exactY)) {
+        const h = 1e-4;
+        const slope = (uData.parsedFn.evaluate({ ...currentParams, x: exactX + h, t: animTime }, useDegrees) - uData.parsedFn.evaluate({ ...currentParams, x: exactX - h, t: animTime }, useDegrees)) / (2 * h);
+        const marker = createCrispMarker(0x00f59b, 0.075);
+        marker.position.set(exactX, exactY, 0.05);
+        probeGroup.add(marker);
+        probeBox.textContent = `Point (x, y) = (${exactX.toFixed(2)}, ${exactY.toFixed(2)})  |  Slope dy/dx = ${isNaN(slope) ? 'undef' : slope.toFixed(2)}`;
+        return;
+      }
+    }
+
+    const marker = createCrispMarker(0x00d2ff, 0.08);
+    marker.position.copy(p);
+    probeGroup.add(marker);
+
     if (uData && uData.type === 'surface' && uData.parsedFn) {
       const h = 1e-4;
       const fx = (uData.parsedFn.evaluate({ ...currentParams, x: p.x + h, y: p.y, t: animTime }, useDegrees) - uData.parsedFn.evaluate({ ...currentParams, x: p.x - h, y: p.y, t: animTime }, useDegrees)) / (2 * h);
@@ -2506,7 +2652,7 @@ function onCanvasMouseMove(event) {
       probeBox.textContent = `Probe (x, y, z) = (${p.x.toFixed(2)}, ${p.y.toFixed(2)}, ${p.z.toFixed(2)})  |  ∇z = (${isNaN(fx)?'0':fx.toFixed(2)}, ${isNaN(fy)?'0':fy.toFixed(2)})`;
       if (document.getElementById('chk-probe-vec').checked && !isNaN(fx) && !isNaN(fy)) {
         const normal = new THREE.Vector3(-fx, -fy, 1).normalize();
-        probeGroup.add(new THREE.ArrowHelper(normal, p, 1.25, 0x38bdf8, 0.22, 0.13));
+        probeGroup.add(new THREE.ArrowHelper(normal, p, 1.3, 0x00d2ff, 0.24, 0.14));
       }
     } else {
       probeBox.textContent = `Probe Coordinates (x, y, z) = (${p.x.toFixed(2)}, ${p.y.toFixed(2)}, ${p.z.toFixed(2)})`;
@@ -2691,6 +2837,7 @@ function onParamT0Change() {
 
 function updateMaterialOpacity() {
   const op = parseFloat(document.getElementById('ctrl-opacity').value);
+  document.getElementById('lbl-opacity').textContent = op.toFixed(2);
   interactiveMeshes.forEach(m => {
     if (m.material && m.material.isMeshPhongMaterial) {
       m.material.transparent = op < 0.99;
@@ -2698,6 +2845,11 @@ function updateMaterialOpacity() {
       m.material.needsUpdate = true;
     }
   });
+}
+
+function toggleAxesGrid() {
+  const L = parseFloat(document.getElementById('ctrl-domain').value) || 8;
+  buildCoordinateAxes(L);
 }
 
 function toggleAngleUnit() {
@@ -2709,12 +2861,16 @@ function toggleAngleUnit() {
 }
 
 function setCameraView(preset) {
-  const L = (parseFloat(document.getElementById('ctrl-domain').value) || 8) * 2.1;
+  const L = Math.max(2, parseFloat(document.getElementById('ctrl-domain').value) || 8);
+  if (preset === 'top') {
+    setDimensionView('2D', false);
+    return;
+  }
+  setDimensionView('3D', true);
   controls.target.set(0, 0, 0);
-  if (preset === 'top') camera.position.set(0, -0.01, L * 1.35);
-  else if (preset === 'front') camera.position.set(0, -L * 1.35, 0);
-  else if (preset === 'side') camera.position.set(L * 1.35, 0, 0);
-  else camera.position.set(L * 0.95, -L * 0.95, L * 0.72);
+  if (preset === 'front') camera.position.set(0, -L * 2.2, 0);
+  else if (preset === 'side') camera.position.set(L * 2.2, 0, 0);
+  else camera.position.set(L * 1.65, -L * 1.65, L * 1.15);
   controls.update();
 }
 
@@ -2727,7 +2883,7 @@ function renderLegend(items) {
   const el = document.getElementById('legend-items');
   el.innerHTML = items.map(it => `
     <div class="legend-item">
-      <span class="legend-swatch" style="background:${it.color}; color:${it.color};"></span>
+      <span class="legend-swatch" style="background:${it.color};"></span>
       <span>${it.text}</span>
     </div>
   `).join('');
