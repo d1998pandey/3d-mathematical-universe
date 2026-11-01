@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>3D Mathematical Universe — Desmos 2D & WebGL 3D Lab</title>
+<title>3D Mathematical Universe — Interactive Visualisation Lab</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <style>
@@ -14,6 +14,7 @@
     --text-main: #f1f5f9;
     --text-muted: #94a3b8;
     --accent: #00d2ff;
+    --accent-hover: #38bdf8;
     --accent-sec: #a855f7;
     --success: #00f59b;
     --danger: #ff4d6d;
@@ -90,9 +91,9 @@
     background: #171f30;
     border: 1px solid var(--panel-border);
     color: var(--text-main);
-    padding: 5px 10px;
+    padding: 5px 9px;
     border-radius: 6px;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 500;
     cursor: pointer;
     transition: 0.15s;
@@ -102,6 +103,7 @@
     background: rgba(0, 210, 255, 0.2);
     border-color: var(--accent);
     color: #fff;
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
   }
 
   .app-body {
@@ -111,9 +113,9 @@
     position: relative;
   }
   .sidebar {
-    width: 385px;
-    min-width: 340px;
-    max-width: 430px;
+    width: 380px;
+    min-width: 335px;
+    max-width: 420px;
     background: var(--panel-bg);
     border-right: 1px solid var(--panel-border);
     display: flex;
@@ -299,7 +301,7 @@
     margin-bottom: 8px;
   }
   .lib-list {
-    max-height: 170px;
+    max-height: 165px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -350,7 +352,7 @@
     color: #7dd3fc;
   }
 
-  /* Central Workspace with Dual Canvases (Desmos 2D + WebGL 3D) */
+  /* Central Workspace */
   .workspace {
     flex: 1;
     position: relative;
@@ -360,18 +362,17 @@
   #canvas-container {
     width: 100%;
     height: 100%;
+  }
+  /* Dedicated Desmos-Grade Infinite 2D Canvas */
+  #canvas-2d {
     position: absolute;
     top: 0;
     left: 0;
-  }
-  #canvas-2d {
     width: 100%;
     height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    cursor: grab;
+    display: block;
     z-index: 2;
+    cursor: grab;
   }
   #canvas-2d:active {
     cursor: grabbing;
@@ -383,7 +384,7 @@
     right: 12px;
     display: flex;
     gap: 5px;
-    background: rgba(15, 20, 32, 0.92);
+    background: rgba(15, 20, 32, 0.94);
     backdrop-filter: blur(8px);
     padding: 6px 8px;
     border-radius: 8px;
@@ -524,7 +525,7 @@
 <header>
   <div class="brand">
     <span>3D MATHEMATICAL UNIVERSE</span>
-    <span class="sub">Desmos-Grade 2D &amp; WebGL 3D Laboratory</span>
+    <span class="sub">Interactive 2D Infinite Precision &amp; 3D Geometry Lab</span>
   </div>
 
   <div class="mode-tabs">
@@ -537,7 +538,7 @@
   </div>
 
   <div class="header-actions">
-    <button class="btn-sm" id="btn-2d-theme" onclick="toggle2DTheme()" title="Switch 2D Canvas between Desmos Paper White and Dark Mode">2D Theme: Desmos White</button>
+    <button class="btn-sm" id="btn-2d-theme" onclick="toggle2DTheme()" title="Switch 2D Paper Light / Dark Mode">2D Theme: Light (Desmos)</button>
     <button class="btn-sm" id="btn-deg-rad" onclick="toggleAngleUnit()">Unit: RAD</button>
     <button class="btn-sm" id="btn-guided" onclick="toggleGuidedMode()">Guided Learning</button>
     <button class="btn-sm" onclick="toggleFullScreen()">Full Screen</button>
@@ -675,11 +676,11 @@
         <div id="calc-point-sliders">
           <div class="slider-row">
             <div class="slider-header"><span>Probe Point x₀</span><span class="val" id="lbl-calc-x">0.50</span></div>
-            <input type="range" id="rng-calc-x" min="-6" max="6" step="0.05" value="0.5" oninput="onCalcPointChange()">
+            <input type="range" id="rng-calc-x" min="-8" max="8" step="0.05" value="0.5" oninput="onCalcPointChange()">
           </div>
           <div class="slider-row" id="calc-y0-row">
             <div class="slider-header"><span>Probe Point / IC y₀</span><span class="val" id="lbl-calc-y">1.00</span></div>
-            <input type="range" id="rng-calc-y" min="-6" max="6" step="0.05" value="1.0" oninput="onCalcPointChange()">
+            <input type="range" id="rng-calc-y" min="-8" max="8" step="0.05" value="1.0" oninput="onCalcPointChange()">
           </div>
         </div>
         <div class="checkbox-row">
@@ -691,11 +692,11 @@
       <div id="ctx-integral" style="display:none;">
         <div class="slider-row">
           <div class="slider-header"><span>Lower Limit a</span><span class="val" id="lbl-int-a">-1.0</span></div>
-          <input type="range" id="rng-int-a" min="-6" max="6" step="0.1" value="-1.0" oninput="onIntegralChange()">
+          <input type="range" id="rng-int-a" min="-8" max="8" step="0.1" value="-1.0" oninput="onIntegralChange()">
         </div>
         <div class="slider-row">
           <div class="slider-header"><span>Upper Limit b (Accumulation)</span><span class="val" id="lbl-int-b">1.0</span></div>
-          <input type="range" id="rng-int-b" min="-6" max="6" step="0.1" value="1.0" oninput="onIntegralChange()">
+          <input type="range" id="rng-int-b" min="-8" max="8" step="0.1" value="1.0" oninput="onIntegralChange()">
         </div>
         <div class="slider-row" id="int-y-limits">
           <div class="slider-header"><span>2D Integration y-range [-c, c]</span><span class="val" id="lbl-int-c">2.0</span></div>
@@ -717,7 +718,7 @@
       <div class="control-grid">
         <div class="control-item">
           <label>3D Axis Space [±L]</label>
-          <input type="number" id="ctrl-domain" value="6" min="2" max="30" step="1" onchange="evaluateAndPlot()">
+          <input type="number" id="ctrl-domain" value="8" min="2" max="30" step="1" onchange="evaluateAndPlot()">
         </div>
         <div class="control-item">
           <label>3D Grid Resolution</label>
@@ -730,13 +731,13 @@
         <div class="control-item">
           <label>2D Line Width (px)</label>
           <select id="ctrl-curve-thick" onchange="evaluateAndPlot()">
-            <option value="1.75">Ultra-Fine (1.75 px)</option>
-            <option value="2.4" selected>Desmos Standard (2.4 px)</option>
-            <option value="3.4">Bold Lecture (3.4 px)</option>
+            <option value="1.5">Ultra-Fine (1.5 px)</option>
+            <option value="2.2" selected>Desmos Crisp (2.2 px)</option>
+            <option value="3.2">Medium (3.2 px)</option>
           </select>
         </div>
         <div class="control-item">
-          <label>3D Colour Map</label>
+          <label>Colour Mapping</label>
           <select id="ctrl-colormap" onchange="evaluateAndPlot()">
             <option value="height">Height (z-value Spectrum)</option>
             <option value="cool">Cyan-Purple Scientific</option>
@@ -781,19 +782,19 @@
       <div class="section-title"><span>Mathematical Intuition &amp; Analysis</span></div>
       <div class="explanation-box" id="explanation-box">
         <h4 id="exp-title">Parabola in Infinite 2D Plane (y = x²)</h4>
-        <div id="exp-body">Symmetric quadratic curve rendered on an infinite Desmos-style coordinate canvas with 5×5 sub-grid squares.</div>
-        <div class="math-stat" id="exp-stats">Scroll to Zoom | Shift+Scroll = X-Axis Stretch | Alt+Scroll = Y-Axis Stretch</div>
+        <div id="exp-body">Rendered in the Desmos-style Infinite 2D Canvas with 5×5 minor sub-grid squares. Scroll to zoom infinitely; hold Shift+Scroll to stretch X-axis or Alt+Scroll to stretch Y-axis independently!</div>
+        <div class="math-stat" id="exp-stats">Vertex: (0, 0) | Focus: (0, 0.25) | Slope dy/dx = 2x</div>
       </div>
     </div>
 
   </aside>
 
-  <!-- CENTRAL WORKSPACE: DUAL ENGINE (2D INFINITE DESMOS CANVAS + 3D WEBGL) -->
+  <!-- CENTRAL 2D / 3D WORKSPACE -->
   <main class="workspace" id="workspace">
-    <!-- 3D WebGL Container -->
-    <div id="canvas-container"></div>
-    <!-- Dedicated 2D Infinite Vector Canvas -->
+    <!-- Dedicated Infinite 2D Precision Canvas (for 2D Curves, Conics, Calculus, Integrals) -->
     <canvas id="canvas-2d"></canvas>
+    <!-- 3D WebGL Container (for 3D Surfaces, Quadrics, Parametric Space Curves) -->
+    <div id="canvas-container"></div>
 
     <!-- Legend Overlay -->
     <div class="legend-overlay" id="legend-overlay">
@@ -803,23 +804,23 @@
 
     <!-- Dedicated 2D / 3D Mode Switch + Independent Axis Zoom & Camera Toolbar -->
     <div class="camera-toolbar">
-      <div class="dim-switch" title="Switch between Dedicated 2D Infinite Plane and 3D WebGL Space">
+      <div class="dim-switch" title="Switch between Infinite 2D Precision Plane and 3D Space">
         <button class="dim-btn active" id="btn-dim-2d" onclick="setDimensionView('2D')">2D Infinite Graph</button>
         <button class="dim-btn" id="btn-dim-3d" onclick="setDimensionView('3D')">3D Space View</button>
       </div>
 
-      <!-- 2D Specific Axis Stretch Controls -->
+      <!-- 2D Specific Controls (Independent X / Y Zoom & Home) -->
       <div id="toolbar-2d-controls" style="display:flex; gap:4px;">
-        <button class="btn-sm" onclick="zoom2D(1.25, 1.25)" title="Zoom In">+</button>
-        <button class="btn-sm" onclick="zoom2D(0.8, 0.8)" title="Zoom Out">−</button>
-        <button class="btn-sm" onclick="zoom2D(1.3, 1.0)" title="Stretch X-Axis Horizontally (or Shift + Scroll)">X ↔+</button>
-        <button class="btn-sm" onclick="zoom2D(0.77, 1.0)" title="Compress X-Axis Horizontally">X ↔−</button>
-        <button class="btn-sm" onclick="zoom2D(1.0, 1.3)" title="Stretch Y-Axis Vertically (or Alt + Scroll)">Y ↕+</button>
-        <button class="btn-sm" onclick="zoom2D(1.0, 0.77)" title="Compress Y-Axis Vertically">Y ↕−</button>
-        <button class="btn-sm" onclick="reset2DView()" title="Reset 1:1 Home View">⌂ Home</button>
+        <button class="btn-sm" onclick="zoom2D(1.25, 1.25)" title="Zoom In Both Axes">＋ Zoom</button>
+        <button class="btn-sm" onclick="zoom2D(0.8, 0.8)" title="Zoom Out Both Axes">－ Zoom</button>
+        <button class="btn-sm" onclick="zoom2D(1.3, 1.0)" title="Stretch X-Axis Horizontally (or Shift + Scroll)">↔ X+</button>
+        <button class="btn-sm" onclick="zoom2D(0.77, 1.0)" title="Compress X-Axis Horizontally (or Shift + Scroll)">↔ X-</button>
+        <button class="btn-sm" onclick="zoom2D(1.0, 1.3)" title="Stretch Y-Axis Vertically (or Alt + Scroll)">↕ Y+</button>
+        <button class="btn-sm" onclick="zoom2D(1.0, 0.77)" title="Compress Y-Axis Vertically (or Alt + Scroll)">↕ Y-</button>
+        <button class="btn-sm" onclick="reset2DView()" title="Reset 2D View to Origin">⌂ Home</button>
       </div>
 
-      <!-- 3D Specific Camera Presets -->
+      <!-- 3D Specific Controls -->
       <div id="toolbar-3d-controls" style="display:none; gap:4px;">
         <button class="btn-sm" onclick="setCameraView('iso')">3D Iso</button>
         <button class="btn-sm" onclick="setCameraView('top')">Top (X-Y)</button>
@@ -847,7 +848,7 @@
 
     <!-- Hover / Click Coordinate & Gradient Probe -->
     <div class="probe-overlay" id="probe-overlay">
-      Hover on curve to inspect exact (x, y) coordinates. Scroll on X or Y axis to zoom that axis independently!
+      Move cursor over graph to inspect exact coordinates | Scroll: Zoom | Shift+Scroll: X-Zoom | Alt+Scroll: Y-Zoom
     </div>
 
     <!-- Time Animation Bar -->
@@ -1132,7 +1133,7 @@ const MathEngine = (function() {
    2. COMPLETE FUNCTION LIBRARY (CATEGORIES A THROUGH J)
    ============================================================================ */
 const FUNCTION_LIBRARY = [
-  { cat: 'A', name: '2D Parabola (Desmos View)', eq: 'y = x²', mode: 'function', desc: 'Standard quadratic parabola y = x² with infinite zoom and 5×5 sub-grid.' },
+  { cat: 'A', name: '2D Parabola (Desmos Precision)', eq: 'y = x²', mode: 'function', desc: 'Standard quadratic parabola y = x² rendered on the infinite 2D sub-grid plane.' },
   { cat: 'A', name: 'Cubic Polynomial with Extrema', eq: 'f(x) = x³ - 3x', mode: 'function', desc: 'Cubic curve featuring a local maximum at x = -1 and local minimum at x = 1.' },
   { cat: 'A', name: 'Quartic Double-Well Potential', eq: 'y = a*x⁴ - b*x²', mode: 'function', desc: 'Symmetric quartic polynomial used in Landau phase transitions and quantum double wells.' },
   { cat: 'A', name: 'Elliptic Paraboloid (3D Bowl)', eq: 'z = a*x² + b*y²', mode: 'function', desc: 'Bowl-shaped 3D surface formed by summing two upward parabolas along x and y.' },
@@ -1213,10 +1214,10 @@ const GUIDED_LESSONS = [
 ];
 
 /* ============================================================================
-   3. GLOBAL STATE, 2D DESMOS ENGINE STATE & 3D THREE.JS INITIALIZATION
+   3. GLOBAL STATE, INFINITE 2D ENGINE STATE & THREE.JS INITIALIZATION
    ============================================================================ */
 let appMode = 'function';
-let currentViewDim = '2D'; // '2D' uses Desmos Infinite 2D Canvas; '3D' uses Three.js WebGL
+let currentViewDim = '2D'; // '2D' uses Desmos-grade Infinite 2D Canvas; '3D' uses Three.js WebGL
 let lastAutoKind = '';
 let useDegrees = false;
 let currentParams = {};
@@ -1224,20 +1225,20 @@ let defaultParams = { a: 1, b: 1, c: 1, A: 2, B: 2, k: 1, ω: 1, φ: 0, r: 3 };
 let animPlaying = false;
 let animTime = 0;
 
-// Dedicated 2D Desmos Engine State
+// Desmos-Grade Infinite 2D Viewport State
 const view2D = {
   centerX: 0,
   centerY: 0.25,
-  scaleX: 280, // pixels per 1 math unit horizontally (starts zoomed nicely like Desmos screenshot)
-  scaleY: 280, // pixels per 1 math unit vertically
-  lightTheme: true, // Default Desmos crisp white paper look
-  isPanning: false,
-  panStartX: 0,
-  panStartY: 0,
-  panOriginX: 0,
-  panOriginY: 0,
+  scaleX: 220, // pixels per 1 math unit horizontally (gives exact -1.5 to 1.5 view like screenshot!)
+  scaleY: 220, // pixels per 1 math unit vertically
+  lightTheme: true, // Default to crisp Desmos paper-white theme for 2D clarity
+  dragging: false,
+  lastMouseX: 0,
+  lastMouseY: 0,
   hoverMouseX: null,
-  hoverMouseY: null
+  hoverMouseY: null,
+  classifiedMain: null,
+  classifiedComp: null
 };
 
 let scene, camera, renderer, controls, raycaster, mouse;
@@ -1253,100 +1254,126 @@ function initApp() {
 }
 
 /* ============================================================================
-   4. DESMOS-GRADE 2D INFINITE CANVAS ENGINE (5x5 SUB-BOXES, INDEPENDENT X/Y ZOOM)
+   4. DESMOS-STYLE INFINITE 2D CANVAS ENGINE (5x5 SUB-SQUARES, X/Y ZOOM, SHARP DOTS)
    ============================================================================ */
 function init2DCanvas() {
   const c2d = document.getElementById('canvas-2d');
 
   c2d.addEventListener('mousedown', e => {
-    view2D.isPanning = true;
-    view2D.panStartX = e.clientX;
-    view2D.panStartY = e.clientY;
-    view2D.panOriginX = view2D.centerX;
-    view2D.panOriginY = view2D.centerY;
+    view2D.dragging = true;
+    view2D.lastMouseX = e.clientX;
+    view2D.lastMouseY = e.clientY;
   });
 
   window.addEventListener('mouseup', () => {
-    view2D.isPanning = false;
+    view2D.dragging = false;
   });
 
   c2d.addEventListener('mousemove', e => {
     const rect = c2d.getBoundingClientRect();
-    view2D.hoverMouseX = e.clientX - rect.left;
-    view2D.hoverMouseY = e.clientY - rect.top;
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    view2D.hoverMouseX = mx;
+    view2D.hoverMouseY = my;
 
-    if (view2D.isPanning) {
-      const dx = e.clientX - view2D.panStartX;
-      const dy = e.clientY - view2D.panStartY;
-      view2D.centerX = view2D.panOriginX - dx / view2D.scaleX;
-      view2D.centerY = view2D.panOriginY + dy / view2D.scaleY;
+    if (view2D.dragging) {
+      const dx = e.clientX - view2D.lastMouseX;
+      const dy = e.clientY - view2D.lastMouseY;
+      view2D.lastMouseX = e.clientX;
+      view2D.lastMouseY = e.clientY;
+      view2D.centerX -= dx / view2D.scaleX;
+      view2D.centerY += dy / view2D.scaleY;
     }
-    render2DScene();
+    render2DInfiniteScene();
   });
 
   c2d.addEventListener('mouseleave', () => {
     view2D.hoverMouseX = null;
     view2D.hoverMouseY = null;
-    render2DScene();
+    render2DInfiniteScene();
   });
 
-  // Infinite Zoom + Separate Horizontal (X) and Vertical (Y) Axis Zoom
+  // Infinite Zoom around cursor + Independent Horizontal (Shift) / Vertical (Alt or Ctrl) Zoom
   c2d.addEventListener('wheel', e => {
     e.preventDefault();
     const rect = c2d.getBoundingClientRect();
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
-    const w = rect.width;
-    const h = rect.height;
+    const w = c2d.clientWidth;
+    const h = c2d.clientHeight;
 
-    // World coordinates under cursor before zoom
-    const worldX = view2D.centerX + (mx - w / 2) / view2D.scaleX;
-    const worldY = view2D.centerY - (my - h / 2) / view2D.scaleY;
-
-    // Screen positions of X and Y axes
-    const originScreenX = w / 2 - view2D.centerX * view2D.scaleX;
-    const originScreenY = h / 2 + view2D.centerY * view2D.scaleY;
-    const nearXAxis = Math.abs(my - originScreenY) < 28;
-    const nearYAxis = Math.abs(mx - originScreenX) < 28;
+    // Math coordinates under cursor before zoom
+    const mathX = view2D.centerX + (mx - w / 2) / view2D.scaleX;
+    const mathY = view2D.centerY - (my - h / 2) / view2D.scaleY;
 
     const factor = e.deltaY < 0 ? 1.13 : (1 / 1.13);
 
-    // Independent axis zoom if Shift/Alt held OR if scrolling directly over the X or Y axis!
-    const zoomOnlyX = e.shiftKey || (nearXAxis && !nearYAxis);
-    const zoomOnlyY = e.altKey || e.ctrlKey || (nearYAxis && !nearXAxis);
+    // Check if user is holding Shift (X-only), Alt/Ctrl (Y-only), or scrolling directly on an axis
+    const axisScreenX = w / 2 - view2D.centerX * view2D.scaleX;
+    const axisScreenY = h / 2 + view2D.centerY * view2D.scaleY;
+    const nearXAxis = Math.abs(my - axisScreenY) < 24 && Math.abs(mx - axisScreenX) >= 24;
+    const nearYAxis = Math.abs(mx - axisScreenX) < 24 && Math.abs(my - axisScreenY) >= 24;
 
-    if (zoomOnlyX) {
-      view2D.scaleX = Math.max(1e-6, Math.min(1e9, view2D.scaleX * factor));
-      view2D.centerX = worldX - (mx - w / 2) / view2D.scaleX;
-    } else if (zoomOnlyY) {
-      view2D.scaleY = Math.max(1e-6, Math.min(1e9, view2D.scaleY * factor));
-      view2D.centerY = worldY + (my - h / 2) / view2D.scaleY;
-    } else {
-      view2D.scaleX = Math.max(1e-6, Math.min(1e9, view2D.scaleX * factor));
-      view2D.scaleY = Math.max(1e-6, Math.min(1e9, view2D.scaleY * factor));
-      view2D.centerX = worldX - (mx - w / 2) / view2D.scaleX;
-      view2D.centerY = worldY + (my - h / 2) / view2D.scaleY;
+    let zx = factor, zy = factor;
+    if (e.shiftKey || nearXAxis) {
+      zy = 1.0; // Zoom X-axis only
+    } else if (e.altKey || e.ctrlKey || nearYAxis) {
+      zx = 1.0; // Zoom Y-axis only
     }
 
-    render2DScene();
+    view2D.scaleX = Math.max(1e-6, Math.min(1e8, view2D.scaleX * zx));
+    view2D.scaleY = Math.max(1e-6, Math.min(1e8, view2D.scaleY * zy));
+
+    // Keep math point under cursor stationary
+    view2D.centerX = mathX - (mx - w / 2) / view2D.scaleX;
+    view2D.centerY = mathY + (my - h / 2) / view2D.scaleY;
+
+    render2DInfiniteScene();
   }, { passive: false });
 }
 
-// Compute Desmos-style adaptive 1-2-5 step size for any zoom level from 10^-9 to 10^9
-function getNiceGridStep(scalePxPerUnit) {
-  const targetPx = 115; // Ideal pixel spacing between major numbered lines
+function zoom2D(fx, fy) {
+  view2D.scaleX = Math.max(1e-6, Math.min(1e8, view2D.scaleX * fx));
+  view2D.scaleY = Math.max(1e-6, Math.min(1e8, view2D.scaleY * fy));
+  render2DInfiniteScene();
+}
+
+function reset2DView() {
+  view2D.centerX = 0;
+  view2D.centerY = 0.25;
+  view2D.scaleX = 220;
+  view2D.scaleY = 220;
+  render2DInfiniteScene();
+}
+
+function toggle2DTheme() {
+  view2D.lightTheme = !view2D.lightTheme;
+  const btn = document.getElementById('btn-2d-theme');
+  btn.textContent = view2D.lightTheme ? '2D Theme: Light (Desmos)' : '2D Theme: Dark';
+  render2DInfiniteScene();
+}
+
+// Compute Desmos-style adaptive 1-2-5 logarithmic step and 5x5 minor sub-divisions
+function computeAdaptiveGridStep(scalePxPerUnit) {
+  const targetPx = 105; // Ideal pixel distance between major grid lines
   const rawStep = targetPx / scalePxPerUnit;
   const mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
   const residual = rawStep / mag;
-  let step;
-  if (residual > 5) step = 10 * mag;
-  else if (residual > 2) step = 5 * mag;
-  else if (residual > 1) step = 2 * mag;
-  else step = mag;
-  return {
-    major: step,
-    minor: step / 5 // 5x5 sub-boxes inside every major square box!
-  };
+  let majorStep, subDivs;
+  if (residual > 5) {
+    majorStep = 10 * mag;
+    subDivs = 5;
+  } else if (residual > 2) {
+    majorStep = 5 * mag;
+    subDivs = 5;
+  } else if (residual > 1) {
+    majorStep = 2 * mag;
+    subDivs = 4;
+  } else {
+    majorStep = 1 * mag;
+    subDivs = 5;
+  }
+  return { majorStep, minorStep: majorStep / subDivs };
 }
 
 function formatTickNumber(val, step) {
@@ -1358,186 +1385,1989 @@ function formatTickNumber(val, step) {
   return parseFloat(val.toFixed(Math.min(6, decimals))).toString();
 }
 
-function zoom2D(fx, fy) {
-  view2D.scaleX = Math.max(1e-6, Math.min(1e9, view2D.scaleX * fx));
-  view2D.scaleY = Math.max(1e-6, Math.min(1e9, view2D.scaleY * fy));
-  render2DScene();
-}
-
-function reset2DView() {
-  view2D.centerX = 0;
-  view2D.centerY = 0.25;
-  view2D.scaleX = 280;
-  view2D.scaleY = 280;
-  render2DScene();
-}
-
-function toggle2DTheme() {
-  view2D.lightTheme = !view2D.lightTheme;
-  const btn = document.getElementById('btn-2d-theme');
-  btn.textContent = view2D.lightTheme ? '2D Theme: Desmos White' : '2D Theme: Dark Lab';
-  render2DScene();
-}
-
-function render2DScene() {
+function render2DInfiniteScene() {
   if (currentViewDim !== '2D') return;
-  const canvas = document.getElementById('canvas-2d');
-  const rect = canvas.parentElement.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
+  const c2d = document.getElementById('canvas-2d');
+  if (!c2d) return;
 
-  if (canvas.width !== Math.floor(rect.width * dpr) || canvas.height !== Math.floor(rect.height * dpr)) {
-    canvas.width = Math.floor(rect.width * dpr);
-    canvas.height = Math.floor(rect.height * dpr);
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = c2d.clientWidth;
+  const h = c2d.clientHeight;
+  if (c2d.width !== Math.floor(w * dpr) || c2d.height !== Math.floor(h * dpr)) {
+    c2d.width = Math.floor(w * dpr);
+    c2d.height = Math.floor(h * dpr);
   }
 
-  const ctx = canvas.getContext('2d');
+  const ctx = c2d.getContext('2d');
   ctx.save();
   ctx.scale(dpr, dpr);
 
-  const W = rect.width;
-  const H = rect.height;
   const isLight = view2D.lightTheme;
+  ctx.fillStyle = isLight ? '#ffffff' : '#070a12';
+  ctx.fillRect(0, 0, w, h);
 
-  // 1. Background Fill
-  ctx.fillStyle = isLight ? '#ffffff' : '#080c14';
-  ctx.fillRect(0, 0, W, H);
+  const toScreenX = x => (w / 2) + (x - view2D.centerX) * view2D.scaleX;
+  const toScreenY = y => (h / 2) - (y - view2D.centerY) * view2D.scaleY;
+  const toMathX = sx => view2D.centerX + (sx - w / 2) / view2D.scaleX;
+  const toMathY = sy => view2D.centerY - (sy - h / 2) / view2D.scaleY;
 
-  // Coordinate conversion helpers
-  const toScreenX = x => W / 2 + (x - view2D.centerX) * view2D.scaleX;
-  const toScreenY = y => H / 2 - (y - view2D.centerY) * view2D.scaleY;
-  const toWorldX = sx => view2D.centerX + (sx - W / 2) / view2D.scaleX;
-  const toWorldY = sy => view2D.centerY - (sy - H / 2) / view2D.scaleY;
+  const xMin = toMathX(0), xMax = toMathX(w);
+  const yMin = toMathY(h), yMax = toMathY(0);
 
-  const xMin = toWorldX(0), xMax = toWorldX(W);
-  const yMin = toWorldY(H), yMax = toWorldY(0);
+  const showAxes = document.getElementById('chk-axes').checked;
+  if (showAxes) {
+    const gridX = computeAdaptiveGridStep(view2D.scaleX);
+    const gridY = computeAdaptiveGridStep(view2D.scaleY);
 
-  const stepX = getNiceGridStep(view2D.scaleX);
-  const stepY = getNiceGridStep(view2D.scaleY);
+    // 1. Draw Minor Sub-Grid Squares (5x5 inside every major box)
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = isLight ? '#ebebeb' : '#131b2e';
+    ctx.beginPath();
+    const firstMinorX = Math.floor(xMin / gridX.minorStep) * gridX.minorStep;
+    for (let x = firstMinorX; x <= xMax; x += gridX.minorStep) {
+      const sx = Math.round(toScreenX(x)) + 0.5;
+      ctx.moveTo(sx, 0);
+      ctx.lineTo(sx, h);
+    }
+    const firstMinorY = Math.floor(yMin / gridY.minorStep) * gridY.minorStep;
+    for (let y = firstMinorY; y <= yMax; y += gridY.minorStep) {
+      const sy = Math.round(toScreenY(y)) + 0.5;
+      ctx.moveTo(0, sy);
+      ctx.lineTo(w, sy);
+    }
+    ctx.stroke();
 
-  // 2. Minor 5x5 Sub-Grid Lines (Crisp 1px lines inside every major box)
-  ctx.lineWidth = 1;
-  ctx.strokeStyle = isLight ? '#ebebeb' : '#141e30';
-  ctx.beginPath();
-  const firstMinorX = Math.floor(xMin / stepX.minor) * stepX.minor;
-  for (let x = firstMinorX; x <= xMax; x += stepX.minor) {
-    const sx = Math.round(toScreenX(x)) + 0.5;
-    ctx.moveTo(sx, 0);
-    ctx.lineTo(sx, H);
-  }
-  const firstMinorY = Math.floor(yMin / stepY.minor) * stepY.minor;
-  for (let y = firstMinorY; y <= yMax; y += stepY.minor) {
-    const sy = Math.round(toScreenY(y)) + 0.5;
-    ctx.moveTo(0, sy);
-    ctx.lineTo(W, sy);
-  }
-  ctx.stroke();
+    // 2. Draw Major Grid Lines
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = isLight ? '#cccccc' : '#24324f';
+    ctx.beginPath();
+    const firstMajorX = Math.floor(xMin / gridX.majorStep) * gridX.majorStep;
+    for (let x = firstMajorX; x <= xMax; x += gridX.majorStep) {
+      const sx = Math.round(toScreenX(x)) + 0.5;
+      ctx.moveTo(sx, 0);
+      ctx.lineTo(sx, h);
+    }
+    const firstMajorY = Math.floor(yMin / gridY.majorStep) * gridY.majorStep;
+    for (let y = firstMajorY; y <= yMax; y += gridY.majorStep) {
+      const sy = Math.round(toScreenY(y)) + 0.5;
+      ctx.moveTo(0, sy);
+      ctx.lineTo(w, sy);
+    }
+    ctx.stroke();
 
-  // 3. Major Grid Lines
-  ctx.lineWidth = 1;
-  ctx.strokeStyle = isLight ? '#d0d0d0' : '#243452';
-  ctx.beginPath();
-  const firstMajorX = Math.floor(xMin / stepX.major) * stepX.major;
-  for (let x = firstMajorX; x <= xMax; x += stepX.major) {
-    const sx = Math.round(toScreenX(x)) + 0.5;
-    ctx.moveTo(sx, 0);
-    ctx.lineTo(sx, H);
-  }
-  const firstMajorY = Math.floor(yMin / stepY.major) * stepY.major;
-  for (let y = firstMajorY; y <= yMax; y += stepY.major) {
-    const sy = Math.round(toScreenY(y)) + 0.5;
-    ctx.moveTo(0, sy);
-    ctx.lineTo(W, sy);
-  }
-  ctx.stroke();
+    // 3. Draw Crisp Infinite X and Y Axes
+    const originX = Math.round(toScreenX(0)) + 0.5;
+    const originY = Math.round(toScreenY(0)) + 0.5;
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = isLight ? '#222222' : '#94a3b8';
+    ctx.beginPath();
+    ctx.moveTo(0, originY);
+    ctx.lineTo(w, originY);
+    ctx.moveTo(originX, 0);
+    ctx.lineTo(originX, h);
+    ctx.stroke();
 
-  // 4. Primary X and Y Axes (Sharp 1.5px lines)
-  const axisX0 = Math.round(toScreenX(0)) + 0.5;
-  const axisY0 = Math.round(toScreenY(0)) + 0.5;
-  ctx.lineWidth = 1.6;
-  ctx.strokeStyle = isLight ? '#222222' : '#cbd5e1';
-  ctx.beginPath();
-  ctx.moveTo(0, axisY0);
-  ctx.lineTo(W, axisY0);
-  ctx.moveTo(axisX0, 0);
-  ctx.lineTo(axisX0, H);
-  ctx.stroke();
+    // 4. Draw Major Tick Labels (Clamped to screen edges if axis is scrolled off-screen!)
+    ctx.font = '500 12px Inter, -apple-system, sans-serif';
+    const labelYPos = Math.max(18, Math.min(h - 10, originY + 15));
+    const labelXPos = Math.max(28, Math.min(w - 14, originX - 7));
 
-  // 5. Crisp Tick Labels along X and Y Axes (Pinned to screen edges if origin is panned off-screen)
-  ctx.font = '500 12px Inter, -apple-system, sans-serif';
-  const labelColor = isLight ? '#333333' : '#cbd5e1';
-  const haloColor = isLight ? 'rgba(255,255,255,0.88)' : 'rgba(8,12,20,0.88)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (let x = firstMajorX; x <= xMax; x += gridX.majorStep) {
+      if (Math.abs(x) < gridX.majorStep * 1e-4) continue;
+      const sx = toScreenX(x);
+      if (sx < 20 || sx > w - 20) continue;
+      const txt = formatTickNumber(x, gridX.majorStep);
+      ctx.lineWidth = 3.5;
+      ctx.strokeStyle = isLight ? 'rgba(255,255,255,0.92)' : 'rgba(7,10,18,0.92)';
+      ctx.strokeText(txt, sx, labelYPos);
+      ctx.fillStyle = isLight ? '#333333' : '#cbd5e1';
+      ctx.fillText(txt, sx, labelYPos);
+    }
 
-  const clampedAxisY = Math.max(18, Math.min(H - 22, axisY0));
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'top';
-  for (let x = firstMajorX; x <= xMax; x += stepX.major) {
-    if (Math.abs(x) < stepX.major * 1e-4) continue;
-    const sx = toScreenX(x);
-    if (sx < 25 || sx > W - 25) continue;
-    const txt = formatTickNumber(x, stepX.major);
-    ctx.strokeStyle = haloColor;
-    ctx.lineWidth = 4;
-    ctx.strokeText(txt, sx, clampedAxisY + 5);
-    ctx.fillStyle = labelColor;
-    ctx.fillText(txt, sx, clampedAxisY + 5);
-  }
-
-  const clampedAxisX = Math.max(36, Math.min(W - 16, axisX0));
-  ctx.textAlign = 'right';
-  ctx.textBaseline = 'middle';
-  for (let y = firstMajorY; y <= yMax; y += stepY.major) {
-    if (Math.abs(y) < stepY.major * 1e-4) continue;
-    const sy = toScreenY(y);
-    if (sy < 18 || sy > H - 18) continue;
-    const txt = formatTickNumber(y, stepY.major);
-    ctx.strokeStyle = haloColor;
-    ctx.lineWidth = 4;
-    ctx.strokeText(txt, clampedAxisX - 6, sy);
-    ctx.fillStyle = labelColor;
-    ctx.fillText(txt, clampedAxisX - 6, sy);
-  }
-
-  // Origin '0' label
-  if (axisX0 > 20 && axisX0 < W - 20 && axisY0 > 15 && axisY0 < H - 20) {
     ctx.textAlign = 'right';
-    ctx.textBaseline = 'top';
-    ctx.fillStyle = labelColor;
-    ctx.fillText('0', axisX0 - 5, axisY0 + 4);
+    for (let y = firstMajorY; y <= yMax; y += gridY.majorStep) {
+      if (Math.abs(y) < gridY.majorStep * 1e-4) continue;
+      const sy = toScreenY(y);
+      if (sy < 18 || sy > h - 18) continue;
+      const txt = formatTickNumber(y, gridY.majorStep);
+      ctx.lineWidth = 3.5;
+      ctx.strokeStyle = isLight ? 'rgba(255,255,255,0.92)' : 'rgba(7,10,18,0.92)';
+      ctx.strokeText(txt, labelXPos, sy);
+      ctx.fillStyle = isLight ? '#333333' : '#cbd5e1';
+      ctx.fillText(txt, labelXPos, sy);
+    }
+
+    // Origin "0" label
+    if (originX > 15 && originX < w - 15 && originY > 15 && originY < h - 15) {
+      ctx.fillStyle = isLight ? '#333333' : '#cbd5e1';
+      ctx.fillText('0', originX - 6, originY + 14);
+    }
   }
 
-  // 6. Plot Active Mathematical Equations in 2D
-  try {
-    const mainEqStr = document.getElementById('eq-main').value;
-    const classified = classifyEquation(mainEqStr);
-    const lineWidthPx = parseFloat(document.getElementById('ctrl-curve-thick').value) || 2.4;
-    const mainColor = isLight ? '#c74440' : '#00d2ff'; // Classic Desmos Red in light mode, Cyan in dark mode
-    const compColor = isLight ? '#2d70b3' : '#ff4d6d'; // Classic Desmos Blue for second curve
+  const lineThick = parseFloat(document.getElementById('ctrl-curve-thick').value) || 2.2;
+  const primaryColor = isLight ? '#c74440' : '#00d2ff'; // Classic Desmos red in Light theme, Cyan in Dark theme
+  const compareColor = isLight ? '#2d70b3' : '#ff4d6d';
 
-    // Mode-specific overlays (Integrals, Slope Fields, Calculus, Roots)
-    if (appMode === 'integral' && classified.kind === 'curve2d') {
-      draw2DIntegralShade(ctx, classified.parsed, toScreenX, toScreenY, isLight);
-    }
-    if (classified.kind === 'ode1' || (appMode === 'calculus' && document.getElementById('calc-submode').value === 'ode1')) {
-      draw2DSlopeFieldAndRK4(ctx, classified.parsed, xMin, xMax, yMin, yMax, stepX.major, stepY.major, toScreenX, toScreenY, isLight);
-    } else if (classified.kind === 'implicit2d') {
-      draw2DImplicitConic(ctx, classified.parsed, W, H, toWorldX, toWorldY, mainColor, lineWidthPx);
-    } else {
-      // Standard 2D curve y = f(x) or x = g(y)
-      draw2DExplicitCurve(ctx, classified, W, H, toWorldX, toWorldY, toScreenX, toScreenY, mainColor, lineWidthPx);
-    }
+  // Helper to draw an infinite explicit curve y = f(x) at 1px screen-space resolution
+  function drawInfiniteCurve2D(parsedFn, strokeColor, widthPx, dashed = false) {
+    ctx.save();
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = widthPx;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    if (dashed) ctx.setLineDash([6, 5]);
 
-    // Comparison second equation
-    if (document.getElementById('chk-compare').checked) {
-      const compStr = document.getElementById('eq-compare').value.trim();
-      if (compStr) {
-        const compClass = classifyEquation(compStr);
-        if (compClass.kind === 'implicit2d') {
-          draw2DImplicitConic(ctx, compClass.parsed, W, H, toWorldX, toWorldY, compColor, lineWidthPx);
-        } else {
-          draw2DExplicitCurve(ctx, compClass, W, H, toWorldX, toWorldY, toScreenX, toScreenY, compColor, lineWidthPx);
-        }
+    ctx.beginPath();
+    let penDown = false;
+    let prevSy = null;
+
+    // Sample every 0.5 screen pixel for razor-sharp anti-aliased curves at ANY zoom level
+    for (let sx = 0; sx <= w; sx += 0.5) {
+      const x = toMathX(sx);
+      const y = parsedFn.evaluate({ ...currentParams, x, t: animTime }, useDegrees);
+      if (isNaN(y)) {
+        penDown = false;
+        prevSy = null;
+        continue;
+      }
+      const sy = toScreenY(y);
+      // Discontinuity / vertical asymptote guard
+      if (sy < -h * 2 || sy > h * 3 || (prevSy !== null && Math.abs(sy - prevSy) > h * 1.2)) {
+        penDown = false;
+        prevSy = sy;
+        continue;
+      }
+      if (!penDown) {
+        ctx.moveTo(sx, sy);
+        penDown = true;
+      } else {
+        ctx.lineTo(sx, sy);
+      }
+      prevSy = sy;
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // Helper to draw 2D Implicit Curve F(x,y) = 0 in Screen Space via Marching Squares
+  function drawInfiniteImplicit2D(parsedFn, strokeColor, widthPx) {
+    const stepPx = 6;
+    const cols = Math.ceil(w / stepPx);
+    const rows = Math.ceil(h / stepPx);
+    const grid = new Float32Array((cols + 1) * (rows + 1));
+
+    for (let i = 0; i <= cols; i++) {
+      const x = toMathX(i * stepPx);
+      for (let j = 0; j <= rows; j++) {
+        const y = toMathY(j * stepPx);
+        const v = parsedFn.evaluate({ ...currentParams, x, y, z: 0, t: animTime }, useDegrees);
+        grid[i * (rows + 1) + j] = isNaN(v) ? 1e9 : v;
       }
     }
 
-    // Calculus 1D derivatives & tangent line
-    if (appMode === 'calculus' && classified.kind === 'curve2d' && document.getElementById('
+    ctx.save();
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = widthPx;
+    ctx.beginPath();
+
+    for (let i = 0; i < cols; i++) {
+      const sx = i * stepPx;
+      for (let j = 0; j < rows; j++) {
+        const sy = j * stepPx;
+        const v00 = grid[i * (rows + 1) + j];
+        const v10 = grid[(i + 1) * (rows + 1) + j];
+        const v11 = grid[(i + 1) * (rows + 1) + (j + 1)];
+        const v01 = grid[i * (rows + 1) + (j + 1)];
+        if ([v00, v10, v11, v01].some(v => Math.abs(v) > 1e7)) continue;
+
+        const pts = [];
+        if ((v00 < 0) !== (v10 < 0)) pts.push([sx + stepPx * (-v00 / (v10 - v00)), sy]);
+        if ((v10 < 0) !== (v11 < 0)) pts.push([sx + stepPx, sy + stepPx * (-v10 / (v11 - v10))]);
+        if ((v11 < 0) !== (v01 < 0)) pts.push([sx + stepPx * (1 - (-v11 / (v01 - v11))), sy + stepPx]);
+        if ((v01 < 0) !== (v00 < 0)) pts.push([sx, sy + stepPx * (1 - (-v01 / (v00 - v01)))]);
+
+        if (pts.length >= 2) {
+          ctx.moveTo(pts[0][0], pts[0][1]);
+          ctx.lineTo(pts[1][0], pts[1][1]);
+        }
+      }
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // Helper to draw a sharp, small Desmos-style point dot (constant screen-pixel radius!)
+  function drawSharpDot(mathX, mathY, fillColor, radiusPx = 4.2) {
+    const sx = toScreenX(mathX);
+    const sy = toScreenY(mathY);
+    if (sx < -20 || sx > w + 20 || sy < -20 || sy > h + 20) return;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(sx, sy, radiusPx, 0, Math.PI * 2);
+    ctx.fillStyle = fillColor;
+    ctx.fill();
+    ctx.lineWidth = 1.6;
+    ctx.strokeStyle = isLight ? '#ffffff' : '#070a12';
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  const mainC = view2D.classifiedMain;
+  if (mainC) {
+    // 1. Integral Shading in 2D
+    if (appMode === 'integral' && mainC.kind === 'curve2d') {
+      const a = parseFloat(document.getElementById('rng-int-a').value);
+      const b = parseFloat(document.getElementById('rng-int-b').value);
+      const lo = Math.min(a, b), hi = Math.max(a, b);
+      const sxLo = Math.max(0, toScreenX(lo)), sxHi = Math.min(w, toScreenX(hi));
+      const syZero = toScreenY(0);
+
+      ctx.save();
+      ctx.fillStyle = isLight ? 'rgba(45, 112, 179, 0.24)' : 'rgba(0, 245, 155, 0.25)';
+      ctx.beginPath();
+      if (sxHi > sxLo) {
+        ctx.moveTo(sxLo, syZero);
+        for (let sx = sxLo; sx <= sxHi; sx += 1) {
+          const y = mainC.parsed.evaluate({ ...currentParams, x: toMathX(sx), t: animTime }, useDegrees);
+          if (!isNaN(y)) ctx.lineTo(sx, toScreenY(y));
+        }
+        ctx.lineTo(sxHi, syZero);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // 2. 1st-Order ODE Direction Field & RK4 Trajectory in 2D
+    if (mainC.kind === 'ode1' || (appMode === 'calculus' && document.getElementById('calc-submode').value === 'ode1')) {
+      const spacingPx = 42;
+      ctx.save();
+      ctx.strokeStyle = isLight ? '#94a3b8' : '#475569';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      for (let sx = 20; sx < w; sx += spacingPx) {
+        for (let sy = 20; sy < h; sy += spacingPx) {
+          const x = toMathX(sx), y = toMathY(sy);
+          const m = mainC.parsed.evaluate({ ...currentParams, x, y, t: animTime }, useDegrees);
+          if (isNaN(m)) continue;
+          const screenSlope = -m * (view2D.scaleY / view2D.scaleX);
+          const len = 11;
+          const dx = len / Math.sqrt(1 + screenSlope * screenSlope);
+          const dy = screenSlope * dx;
+          ctx.moveTo(sx - dx, sy - dy);
+          ctx.lineTo(sx + dx, sy + dy);
+        }
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      // RK4 solution curve
+      const x0 = parseFloat(document.getElementById('rng-calc-x').value);
+      const y0 = parseFloat(document.getElementById('rng-calc-y').value);
+      ctx.save();
+      ctx.strokeStyle = primaryColor;
+      ctx.lineWidth = lineThick;
+      for (const dir of [-1, 1]) {
+        ctx.beginPath();
+        let cx = x0, cy = y0;
+        ctx.moveTo(toScreenX(cx), toScreenY(cy));
+        const hStep = dir * ((xMax - xMin) / 400);
+        for (let i = 0; i < 450; i++) {
+          const k1 = mainC.parsed.evaluate({ ...currentParams, x: cx, y: cy }, useDegrees);
+          const k2 = mainC.parsed.evaluate({ ...currentParams, x: cx + 0.5*hStep, y: cy + 0.5*hStep*k1 }, useDegrees);
+          const k3 = mainC.parsed.evaluate({ ...currentParams, x: cx + 0.5*hStep, y: cy + 0.5*hStep*k2 }, useDegrees);
+          const k4 = mainC.parsed.evaluate({ ...currentParams, x: cx + hStep, y: cy + hStep*k3 }, useDegrees);
+          if ([k1, k2, k3, k4].some(isNaN)) break;
+          cy += (hStep / 6) * (k1 + 2*k2 + 2*k3 + k4);
+          cx += hStep;
+          ctx.lineTo(toScreenX(cx), toScreenY(cy));
+        }
+        ctx.stroke();
+      }
+      ctx.restore();
+      drawSharpDot(x0, y0, '#2d70b3', 4.5);
+    } else if (mainC.kind === 'implicit2d' || mainC.kind === 'implicit3d') {
+      drawInfiniteImplicit2D(mainC.parsed, primaryColor, lineThick);
+    } else if (mainC.kind === 'curve2d' || mainC.kind === 'surface_explicit') {
+      drawInfiniteCurve2D(mainC.parsed, primaryColor, lineThick);
+    }
+
+    // 3. Calculus Derivatives & Tangent Line in 2D
+    if (appMode === 'calculus' && mainC.kind === 'curve2d') {
+      const hStep = 1e-5;
+      if (document.getElementById('chk-show-f1').checked) {
+        const d1Obj = {
+          evaluate: (env, deg) => (mainC.parsed.evaluate({ ...env, x: env.x + hStep }, deg) - mainC.parsed.evaluate({ ...env, x: env.x - hStep }, deg)) / (2 * hStep)
+        };
+        drawInfiniteCurve2D(d1Obj, '#e67e22', 1.6, true);
+      }
+      if (document.getElementById('chk-show-f2').checked) {
+        const d2Obj = {
+          evaluate: (env, deg) => {
+            const f0 = mainC.parsed.evaluate(env, deg);
+            const fp = mainC.parsed.evaluate({ ...env, x: env.x + hStep }, deg);
+            const fm = mainC.parsed.evaluate({ ...env, x: env.x - hStep }, deg);
+            return (fp - 2 * f0 + fm) / (hStep * hStep);
+          }
+        };
+        drawInfiniteCurve2D(d2Obj, '#8e44ad', 1.5, true);
+      }
+
+      const x0 = parseFloat(document.getElementById('rng-calc-x').value);
+      const y0 = mainC.parsed.evaluate({ ...currentParams, x: x0, t: animTime }, useDegrees);
+      const slope = (mainC.parsed.evaluate({ ...currentParams, x: x0 + hStep, t: animTime }, useDegrees) - mainC.parsed.evaluate({ ...currentParams, x: x0 - hStep, t: animTime }, useDegrees)) / (2 * hStep);
+      if (!isNaN(y0) && !isNaN(slope)) {
+        const tanObj = { evaluate: env => y0 + slope * (env.x - x0) };
+        drawInfiniteCurve2D(tanObj, '#27ae60', 1.8);
+        drawSharpDot(x0, y0, '#27ae60', 4.5);
+      }
+    }
+
+    // 4. Roots & Critical Extrema Dots in 2D
+    if (appMode === 'roots' && mainC.kind === 'curve2d') {
+      const samples = 500;
+      const hStep = 1e-5;
+      const deriv = x => (mainC.parsed.evaluate({ ...currentParams, x: x + hStep, t: animTime }, useDegrees) - mainC.parsed.evaluate({ ...currentParams, x: x - hStep, t: animTime }, useDegrees)) / (2 * hStep);
+      let prevX = xMin, prevY = mainC.parsed.evaluate({ ...currentParams, x: xMin, t: animTime }, useDegrees);
+      let prevD = deriv(xMin);
+
+      for (let i = 1; i <= samples; i++) {
+        const x = xMin + ((xMax - xMin) * i) / samples;
+        const y = mainC.parsed.evaluate({ ...currentParams, x, t: animTime }, useDegrees);
+        const d = deriv(x);
+        if (!isNaN(prevY) && !isNaN(y) && ((prevY <= 0 && y >= 0) || (prevY >= 0 && y <= 0))) {
+          let lo = prevX, hi = x;
+          for (let k = 0; k < 14; k++) {
+            const mid = 0.5 * (lo + hi);
+            const ym = mainC.parsed.evaluate({ ...currentParams, x: mid, t: animTime }, useDegrees);
+            if ((prevY <= 0 && ym >= 0) || (prevY >= 0 && ym <= 0)) hi = mid;
+            else lo = mid;
+          }
+          const rx = 0.5 * (lo + hi);
+          if (Math.abs(mainC.parsed.evaluate({ ...currentParams, x: rx, t: animTime }, useDegrees)) < 0.05) {
+            drawSharpDot(rx, 0, '#f39c12', 4.2);
+          }
+        }
+        if (!isNaN(prevD) && !isNaN(d) && ((prevD <= 0 && d >= 0) || (prevD >= 0 && d <= 0))) {
+          const cx = 0.5 * (prevX + x);
+          const cy = mainC.parsed.evaluate({ ...currentParams, x: cx, t: animTime }, useDegrees);
+          if (!isNaN(cy) && Math.abs(deriv(cx)) < 0.2) {
+            drawSharpDot(cx, cy, '#27ae60', 4.2);
+          }
+        }
+        prevX = x; prevY = y; prevD = d;
+      }
+    }
+
+    // 5. Second Equation Comparison in 2D
+    if (view2D.classifiedComp) {
+      const compC = view2D.classifiedComp;
+      if (compC.kind === 'implicit2d') drawInfiniteImplicit2D(compC.parsed, compareColor, lineThick);
+      else drawInfiniteCurve2D(compC.parsed, compareColor, lineThick);
+    }
+
+    // 6. Crisp Hover Point & Coordinate Tooltip on Curve (Small, Sharp Relative Dot)
+    if (view2D.hoverMouseX !== null && (mainC.kind === 'curve2d' || mainC.kind === 'surface_explicit')) {
+      const hx = toMathX(view2D.hoverMouseX);
+      const hy = mainC.parsed.evaluate({ ...currentParams, x: hx, y: 0, t: animTime }, useDegrees);
+      const probeBox = document.getElementById('probe-overlay');
+
+      if (!isNaN(hy)) {
+        const sy = toScreenY(hy);
+        const distPx = Math.abs(sy - view2D.hoverMouseY);
+        const hStep = 1e-5;
+        const slope = (mainC.parsed.evaluate({ ...currentParams, x: hx + hStep, y: 0, t: animTime }, useDegrees) - mainC.parsed.evaluate({ ...currentParams, x: hx - hStep, y: 0, t: animTime }, useDegrees)) / (2 * hStep);
+
+        // Draw crisp small 4px point on the curve
+        drawSharpDot(hx, hy, primaryColor, 4.0);
+
+        // If cursor is within 45px of the curve, show clean Desmos floating coordinate pill
+        if (distPx < 45) {
+          const labelStr = `(${hx.toFixed(3)}, ${hy.toFixed(3)})`;
+          ctx.font = '600 12px JetBrains Mono, Consolas, monospace';
+          const textW = ctx.measureText(labelStr).width + 14;
+          const boxX = Math.min(w - textW - 8, Math.max(8, view2D.hoverMouseX + 12));
+          const boxY = Math.max(28, Math.min(h - 16, sy - 14));
+
+          ctx.fillStyle = isLight ? 'rgba(255, 255, 255, 0.94)' : 'rgba(15, 20, 32, 0.94)';
+          ctx.strokeStyle = isLight ? '#bbbbbb' : '#38bdf8';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.roundRect(boxX, boxY - 18, textW, 24, 5);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = isLight ? '#111111' : '#f8fafc';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(labelStr, boxX + 7, boxY - 6);
+        }
+        probeBox.textContent = `Point (x, y) = (${hx.toFixed(4)}, ${hy.toFixed(4)})  |  Slope dy/dx = ${isNaN(slope) ? 'undef' : slope.toFixed(4)}`;
+      }
+    }
+  }
+
+  ctx.restore();
+}
+
+/* ============================================================================
+   5. THREE.JS 3D ENGINE INITIALIZATION (FOR 3D SURFACES, QUADRICS, PARAMETRIC)
+   ============================================================================ */
+function initThreeJS() {
+  const container = document.getElementById('canvas-container');
+  scene = new THREE.Scene();
+
+  camera = new THREE.PerspectiveCamera(42, container.clientWidth / container.clientHeight, 0.1, 1000);
+  camera.up.set(0, 0, 1);
+  camera.position.set(14, -14, 11);
+
+  renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', logarithmicDepthBuffer: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  container.appendChild(renderer.domElement);
+
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.target.set(0, 0, 0);
+
+  const ambient = new THREE.AmbientLight(0xffffff, 0.72);
+  scene.add(ambient);
+  const dir1 = new THREE.DirectionalLight(0xffffff, 0.78);
+  dir1.position.set(18, -18, 25);
+  scene.add(dir1);
+  const dir2 = new THREE.DirectionalLight(0x90caf9, 0.45);
+  dir2.position.set(-18, 18, -14);
+  scene.add(dir2);
+
+  plotGroup = new THREE.Group();
+  axesGroup = new THREE.Group();
+  probeGroup = new THREE.Group();
+  scene.add(axesGroup);
+  scene.add(plotGroup);
+  scene.add(probeGroup);
+
+  raycaster = new THREE.Raycaster();
+  raycaster.params.Line.threshold = 0.18;
+  mouse = new THREE.Vector2();
+
+  renderer.domElement.addEventListener('mousemove', onCanvas3DMouseMove);
+  renderer.domElement.addEventListener('click', onCanvas3DMouseMove);
+  window.addEventListener('resize', onWindowResize);
+}
+
+function onWindowResize() {
+  const container = document.getElementById('canvas-container');
+  if (!container) return;
+  camera.aspect = container.clientWidth / container.clientHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  render2DInfiniteScene();
+}
+
+function setDimensionView(dim, preserveCam = false) {
+  currentViewDim = dim;
+  document.getElementById('btn-dim-2d').classList.toggle('active', dim === '2D');
+  document.getElementById('btn-dim-3d').classList.toggle('active', dim === '3D');
+
+  const c2d = document.getElementById('canvas-2d');
+  const c3d = document.getElementById('canvas-container');
+  const tb2d = document.getElementById('toolbar-2d-controls');
+  const tb3d = document.getElementById('toolbar-3d-controls');
+
+  if (dim === '2D') {
+    c2d.style.display = 'block';
+    c3d.style.visibility = 'hidden';
+    tb2d.style.display = 'flex';
+    tb3d.style.display = 'none';
+    render2DInfiniteScene();
+  } else {
+    c2d.style.display = 'none';
+    c3d.style.visibility = 'visible';
+    tb2d.style.display = 'none';
+    tb3d.style.display = 'flex';
+    const L = Math.max(2, parseFloat(document.getElementById('ctrl-domain').value) || 8);
+    camera.up.set(0, 0, 1);
+    if (!preserveCam) {
+      controls.target.set(0, 0, 0);
+      camera.position.set(L * 1.65, -L * 1.65, L * 1.15);
+    }
+    controls.enableRotate = true;
+    controls.update();
+    buildCoordinateAxes3D(L);
+  }
+}
+
+/* ============================================================================
+   6. 3D CARTESIAN AXES & GRID (FOR 3D VIEW)
+   ============================================================================ */
+function makeTextSprite3D(text, colorStr = '#f8fafc', fontSize = 54) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 128;
+  const ctx = canvas.getContext('2d');
+  ctx.font = `bold ${fontSize}px Inter, Consolas, sans-serif`;
+  ctx.strokeStyle = 'rgba(6, 9, 17, 0.9)';
+  ctx.lineWidth = 7;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.strokeText(text, 128, 64);
+  ctx.fillStyle = colorStr;
+  ctx.fillText(text, 128, 64);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.minFilter = THREE.LinearFilter;
+  const mat = new THREE.SpriteMaterial({ map: texture, depthTest: false, depthWrite: false });
+  const sprite = new THREE.Sprite(mat);
+  sprite.scale.set(1.15, 0.58, 1);
+  sprite.renderOrder = 20;
+  return sprite;
+}
+
+function buildCoordinateAxes3D(L) {
+  clearGroup(axesGroup);
+  if (!document.getElementById('chk-axes').checked) return;
+
+  const subVerts = [];
+  const majorVerts = [];
+  const zGridOffset = -0.008;
+
+  for (let u = -L; u <= L + 0.001; u += 0.5) {
+    const isInt = Math.abs(u - Math.round(u)) < 1e-4;
+    const val = isInt ? Math.round(u) : u;
+    if (Math.abs(val) < 1e-4) continue;
+    if (isInt) {
+      majorVerts.push(-L, val, zGridOffset, L, val, zGridOffset);
+      majorVerts.push(val, -L, zGridOffset, val, L, zGridOffset);
+    } else if (L <= 12) {
+      subVerts.push(-L, val, zGridOffset, L, val, zGridOffset);
+      subVerts.push(val, -L, zGridOffset, val, L, zGridOffset);
+    }
+  }
+
+  majorVerts.push(-L, -L, zGridOffset, L, -L, zGridOffset);
+  majorVerts.push(-L, L, zGridOffset, L, L, zGridOffset);
+  majorVerts.push(-L, -L, zGridOffset, -L, L, zGridOffset);
+  majorVerts.push(L, -L, zGridOffset, L, L, zGridOffset);
+
+  if (subVerts.length > 0) {
+    const subGeo = new THREE.BufferGeometry();
+    subGeo.setAttribute('position', new THREE.Float32BufferAttribute(subVerts, 3));
+    axesGroup.add(new THREE.LineSegments(subGeo, new THREE.LineBasicMaterial({ color: 0x162035, transparent: true, opacity: 0.75 })));
+  }
+
+  const majorGeo = new THREE.BufferGeometry();
+  majorGeo.setAttribute('position', new THREE.Float32BufferAttribute(majorVerts, 3));
+  axesGroup.add(new THREE.LineSegments(majorGeo, new THREE.LineBasicMaterial({ color: 0x2e4166, transparent: true, opacity: 0.95 })));
+
+  const axisLen = L * 1.18;
+  const axisRadius = Math.max(0.02, L * 0.0028);
+
+  const xCylGeo = new THREE.CylinderGeometry(axisRadius, axisRadius, axisLen * 2, 12);
+  xCylGeo.rotateZ(-Math.PI / 2);
+  const xMat = new THREE.MeshBasicMaterial({ color: 0xff4d6d });
+  axesGroup.add(new THREE.Mesh(xCylGeo, xMat));
+
+  const xCone = new THREE.Mesh(new THREE.ConeGeometry(axisRadius * 3.2, axisRadius * 10, 14), xMat);
+  xCone.rotation.z = -Math.PI / 2;
+  xCone.position.set(axisLen, 0, 0);
+  axesGroup.add(xCone);
+
+  const xLbl = makeTextSprite3D('X', '#ff4d6d', 62);
+  xLbl.position.set(axisLen + 0.55, 0, 0);
+  axesGroup.add(xLbl);
+
+  const yCylGeo = new THREE.CylinderGeometry(axisRadius, axisRadius, axisLen * 2, 12);
+  const yMat = new THREE.MeshBasicMaterial({ color: 0x00f59b });
+  axesGroup.add(new THREE.Mesh(yCylGeo, yMat));
+
+  const yCone = new THREE.Mesh(new THREE.ConeGeometry(axisRadius * 3.2, axisRadius * 10, 14), yMat);
+  yCone.position.set(0, axisLen, 0);
+  axesGroup.add(yCone);
+
+  const yLbl = makeTextSprite3D('Y', '#00f59b', 62);
+  yLbl.position.set(0, axisLen + 0.55, 0);
+  axesGroup.add(yLbl);
+
+  const zCylGeo = new THREE.CylinderGeometry(axisRadius, axisRadius, axisLen * 2, 12);
+  zCylGeo.rotateX(Math.PI / 2);
+  const zMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff });
+  axesGroup.add(new THREE.Mesh(zCylGeo, zMat));
+
+  const zCone = new THREE.Mesh(new THREE.ConeGeometry(axisRadius * 3.2, axisRadius * 10, 14), zMat);
+  zCone.rotation.x = Math.PI / 2;
+  zCone.position.set(0, 0, axisLen);
+  axesGroup.add(zCone);
+
+  const zLbl = makeTextSprite3D('Z', '#00d2ff', 62);
+  zLbl.position.set(0, 0, axisLen + 0.55);
+  axesGroup.add(zLbl);
+
+  const tickStep = L > 16 ? 2 : 1;
+  for (let v = -L; v <= L; v += tickStep) {
+    if (v === 0) continue;
+    const sx = makeTextSprite3D(String(v), '#e2e8f0', 42);
+    sx.scale.set(0.85, 0.42, 1);
+    sx.position.set(v, -0.38, 0.01);
+    axesGroup.add(sx);
+
+    const sy = makeTextSprite3D(String(v), '#e2e8f0', 42);
+    sy.scale.set(0.85, 0.42, 1);
+    sy.position.set(-0.38, v, 0.01);
+    axesGroup.add(sy);
+  }
+}
+
+function clearGroup(group) {
+  while (group.children.length > 0) {
+    const obj = group.children[0];
+    group.remove(obj);
+    if (obj.geometry) obj.geometry.dispose();
+    if (obj.material) {
+      if (Array.isArray(obj.material)) obj.material.forEach(m => m.dispose());
+      else obj.material.dispose();
+    }
+  }
+}
+
+/* ============================================================================
+   7. COLOUR MAPPING & CLASSIFICATION
+   ============================================================================ */
+function mapColor(t, scheme) {
+  const c = Math.max(0, Math.min(1, isNaN(t) ? 0.5 : t));
+  const color = new THREE.Color();
+  if (scheme === 'cool') {
+    color.setHSL(0.52 + 0.28 * c, 0.9, 0.48 + 0.15 * c);
+  } else if (scheme === 'thermal') {
+    color.setHSL(0.0 + 0.16 * c, 0.95, 0.3 + 0.48 * c);
+  } else if (scheme === 'complex') {
+    color.setHSL(c, 0.9, 0.55);
+  } else {
+    color.setHSL((1 - c) * 0.65, 0.92, 0.52);
+  }
+  return color;
+}
+
+function classifyEquation(rawInput) {
+  const raw = rawInput.trim();
+  if (!raw) throw new Error('Please enter a mathematical equation.');
+
+  if (/^dy\s*\/\s*dx\s*=/.test(raw) || /^y'\s*=/.test(raw)) {
+    const rhs = raw.split('=')[1];
+    const parsed = MathEngine.parse(rhs);
+    return { kind: 'ode1', rhs, parsed, label: '1st-Order ODE dy/dx = f(x,y)', is2D: true };
+  }
+  if (/d²y\/dx²|y''/.test(raw)) {
+    return { kind: 'ode2', raw, parsed: MathEngine.parse('x'), label: '2nd-Order Harmonic ODE', is2D: false };
+  }
+
+  const parts = raw.split('=');
+  if (parts.length > 2) throw new Error('Equation cannot contain multiple "=" signs.');
+
+  if (parts.length === 2) {
+    const lhs = parts[0].trim();
+    const rhs = parts[1].trim();
+    if (!lhs || !rhs) throw new Error('Incomplete equation around "=" sign.');
+
+    if ((lhs === 'y' || /^f\s*\(\s*x\s*\)$/.test(lhs)) && !/\by\b|\bz\b/.test(rhs)) {
+      const parsed = MathEngine.parse(rhs);
+      return { kind: 'curve2d', expr: rhs, parsed, label: '2D Function y = f(x)', is2D: true };
+    }
+    if (lhs === 'x' && !/\bx\b|\bz\b/.test(rhs)) {
+      const parsed = MathEngine.parse(rhs);
+      return { kind: 'curve2d_x', expr: rhs, parsed, label: '2D Curve x = g(y)', is2D: true };
+    }
+    if ((lhs === 'z' || /^f\s*\(\s*x\s*,\s*y\s*\)$/.test(lhs)) && !/\bz\b/.test(rhs)) {
+      const parsed = MathEngine.parse(rhs);
+      return { kind: 'surface_explicit', expr: rhs, parsed, label: '3D Surface z = f(x,y)', is2D: false };
+    }
+    if (rhs === 'z' && !/\bz\b/.test(lhs)) {
+      const parsed = MathEngine.parse(lhs);
+      return { kind: 'surface_explicit', expr: lhs, parsed, label: '3D Surface z = f(x,y)', is2D: false };
+    }
+
+    const diffExpr = `(${lhs}) - (${rhs})`;
+    const parsed = MathEngine.parse(diffExpr);
+    const hasZ = parsed.vars.includes('z');
+    if (!hasZ && appMode !== 'implicit') {
+      return { kind: 'implicit2d', expr: diffExpr, parsed, label: '2D Implicit Conic F(x,y) = 0', is2D: true };
+    }
+    return { kind: 'implicit3d', expr: diffExpr, parsed, label: '3D Implicit Surface F(x,y,z) = 0', is2D: false };
+  } else {
+    const parsed = MathEngine.parse(raw);
+    if (parsed.vars.includes('z')) {
+      return { kind: 'implicit3d', expr: raw, parsed, label: '3D Implicit Surface F(x,y,z) = 0', is2D: false };
+    }
+    if (parsed.vars.includes('y')) {
+      return { kind: 'surface_explicit', expr: raw, parsed, label: '3D Surface z = f(x,y)', is2D: false };
+    }
+    return { kind: 'curve2d', expr: raw, parsed, label: '2D Function y = f(x)', is2D: true };
+  }
+}
+
+/* ============================================================================
+   8. 3D GEOMETRY GENERATORS (SURFACES, MARCHING TETRAHEDRA, 3D CURVES)
+   ============================================================================ */
+function buildExplicitSurfaceMesh(parsedFn, L, N, colormap, opacity, wireOn, fixedColor = null) {
+  const zClip = L * 2.5;
+  const positions = [];
+  const colors = [];
+  const indices = [];
+  const zGrid = new Float32Array((N + 1) * (N + 1));
+
+  let zMin = Infinity, zMax = -Infinity;
+  for (let i = 0; i <= N; i++) {
+    const x = -L + (2 * L * i) / N;
+    for (let j = 0; j <= N; j++) {
+      const y = -L + (2 * L * j) / N;
+      const env = { ...currentParams, x, y, t: animTime };
+      let z = parsedFn.evaluate(env, useDegrees);
+      if (Math.abs(z) > zClip) z = NaN;
+      zGrid[i * (N + 1) + j] = z;
+      if (!isNaN(z)) {
+        if (z < zMin) zMin = z;
+        if (z > zMax) zMax = z;
+      }
+    }
+  }
+  if (!isFinite(zMin)) { zMin = -L; zMax = L; }
+  const zSpan = Math.max(0.001, zMax - zMin);
+
+  for (let i = 0; i <= N; i++) {
+    const x = -L + (2 * L * i) / N;
+    for (let j = 0; j <= N; j++) {
+      const y = -L + (2 * L * j) / N;
+      const z = zGrid[i * (N + 1) + j];
+      positions.push(x, y, isNaN(z) ? 0 : z);
+      if (fixedColor) {
+        const c = new THREE.Color(fixedColor);
+        colors.push(c.r, c.g, c.b);
+      } else {
+        const norm = isNaN(z) ? 0.5 : (z - zMin) / zSpan;
+        const c = mapColor(norm, colormap);
+        colors.push(c.r, c.g, c.b);
+      }
+    }
+  }
+
+  const maxStepJump = L * 1.5;
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      const a = i * (N + 1) + j;
+      const b = (i + 1) * (N + 1) + j;
+      const c = (i + 1) * (N + 1) + (j + 1);
+      const d = i * (N + 1) + (j + 1);
+
+      const za = zGrid[a], zb = zGrid[b], zc = zGrid[c], zd = zGrid[d];
+      if (!isNaN(za) && !isNaN(zb) && !isNaN(zd)) {
+        if (Math.abs(za - zb) < maxStepJump && Math.abs(za - zd) < maxStepJump && Math.abs(zb - zd) < maxStepJump) {
+          indices.push(a, b, d);
+        }
+      }
+      if (!isNaN(zb) && !isNaN(zc) && !isNaN(zd)) {
+        if (Math.abs(zb - zc) < maxStepJump && Math.abs(zb - zd) < maxStepJump && Math.abs(zc - zd) < maxStepJump) {
+          indices.push(b, c, d);
+        }
+      }
+    }
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setIndex(indices);
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+  geo.computeVertexNormals();
+
+  const mat = new THREE.MeshPhongMaterial({
+    vertexColors: true,
+    side: THREE.DoubleSide,
+    transparent: opacity < 0.99,
+    opacity: opacity,
+    shininess: 55
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.userData = { type: 'surface', parsedFn };
+
+  const container = new THREE.Group();
+  container.add(mesh);
+  interactiveMeshes.push(mesh);
+
+  if (wireOn) {
+    const wireMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.14 });
+    container.add(new THREE.Mesh(geo, wireMat));
+  }
+  return { group: container, zMin, zMax };
+}
+
+function buildImplicitSurface3D(parsedFn, L, N, colormap, opacity, wireOn, fixedColor = null) {
+  const res = Math.min(48, Math.max(24, Math.floor(N * 0.55)));
+  const size = res + 1;
+  const grid = new Float32Array(size * size * size);
+
+  for (let ix = 0; ix <= res; ix++) {
+    const x = -L + (2 * L * ix) / res;
+    for (let iy = 0; iy <= res; iy++) {
+      const y = -L + (2 * L * iy) / res;
+      for (let iz = 0; iz <= res; iz++) {
+        const z = -L + (2 * L * iz) / res;
+        const val = parsedFn.evaluate({ ...currentParams, x, y, z, t: animTime }, useDegrees);
+        grid[ix * size * size + iy * size + iz] = isNaN(val) ? 1e6 : val;
+      }
+    }
+  }
+
+  const positions = [];
+  const colors = [];
+  const TETRA = [
+    [0, 5, 1, 6], [0, 1, 2, 6], [0, 2, 3, 6],
+    [0, 3, 7, 6], [0, 7, 4, 6], [0, 4, 5, 6]
+  ];
+  const CUBE_VERTS = [
+    [0,0,0], [1,0,0], [1,1,0], [0,1,0],
+    [0,0,1], [1,0,1], [1,1,1], [0,1,1]
+  ];
+
+  function interp(p1, p2, v1, v2) {
+    const denom = v2 - v1;
+    const mu = Math.abs(denom) < 1e-9 ? 0.5 : (-v1 / denom);
+    const t = Math.max(0, Math.min(1, mu));
+    return [
+      p1[0] + t * (p2[0] - p1[0]),
+      p1[1] + t * (p2[1] - p1[1]),
+      p1[2] + t * (p2[2] - p1[2])
+    ];
+  }
+
+  function pushTriangle(a, b, c) {
+    positions.push(a[0], a[1], a[2], b[0], b[1], b[2], c[0], c[1], c[2]);
+    for (const pt of [a, b, c]) {
+      if (fixedColor) {
+        const col = new THREE.Color(fixedColor);
+        colors.push(col.r, col.g, col.b);
+      } else {
+        const col = mapColor((pt[2] + L) / (2 * L), colormap);
+        colors.push(col.r, col.g, col.b);
+      }
+    }
+  }
+
+  const step = (2 * L) / res;
+  for (let ix = 0; ix < res; ix++) {
+    const x0 = -L + ix * step;
+    for (let iy = 0; iy < res; iy++) {
+      const y0 = -L + iy * step;
+      for (let iz = 0; iz < res; iz++) {
+        const z0 = -L + iz * step;
+        const cPts = new Array(8);
+        const cVals = new Float32Array(8);
+        let hasPos = false, hasNeg = false;
+        for (let k = 0; k < 8; k++) {
+          const cv = CUBE_VERTS[k];
+          const vx = ix + cv[0], vy = iy + cv[1], vz = iz + cv[2];
+          const val = grid[vx * size * size + vy * size + vz];
+          cVals[k] = val;
+          if (val > 1e5) { hasPos = false; hasNeg = false; break; }
+          if (val >= 0) hasPos = true;
+          if (val <= 0) hasNeg = true;
+          cPts[k] = [x0 + cv[0] * step, y0 + cv[1] * step, z0 + cv[2] * step];
+        }
+        if (!hasPos || !hasNeg) continue;
+
+        for (let t = 0; t < 6; t++) {
+          const tet = TETRA[t];
+          const inside = [], outside = [];
+          for (let m = 0; m < 4; m++) {
+            const idx = tet[m];
+            if (cVals[idx] < 0) inside.push(idx);
+            else outside.push(idx);
+          }
+          if (inside.length === 0 || inside.length === 4) continue;
+          if (inside.length === 1) {
+            const i0 = inside[0];
+            pushTriangle(
+              interp(cPts[i0], cPts[outside[0]], cVals[i0], cVals[outside[0]]),
+              interp(cPts[i0], cPts[outside[1]], cVals[i0], cVals[outside[1]]),
+              interp(cPts[i0], cPts[outside[2]], cVals[i0], cVals[outside[2]])
+            );
+          } else if (inside.length === 3) {
+            const o0 = outside[0];
+            const e1 = interp(cPts[o0], cPts[inside[0]], cVals[o0], cVals[inside[0]]);
+            const e2 = interp(cPts[o0], cPts[inside[1]], cVals[o0], cVals[inside[1]]);
+            const e3 = interp(cPts[o0], cPts[inside[2]], cVals[o0], cVals[inside[2]]);
+            pushTriangle(e1, e3, e2);
+          } else if (inside.length === 2) {
+            const i0 = inside[0], i1 = inside[1], o0 = outside[0], o1 = outside[1];
+            const a = interp(cPts[i0], cPts[o0], cVals[i0], cVals[o0]);
+            const b = interp(cPts[i0], cPts[o1], cVals[i0], cVals[o1]);
+            const c = interp(cPts[i1], cPts[o0], cVals[i1], cVals[o0]);
+            const d = interp(cPts[i1], cPts[o1], cVals[i1], cVals[o1]);
+            pushTriangle(a, b, d);
+            pushTriangle(a, d, c);
+          }
+        }
+      }
+    }
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+  geo.computeVertexNormals();
+
+  const mat = new THREE.MeshPhongMaterial({
+    vertexColors: true,
+    side: THREE.DoubleSide,
+    transparent: opacity < 0.99,
+    opacity: opacity,
+    shininess: 65
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.userData = { type: 'implicit', parsedFn };
+
+  const group = new THREE.Group();
+  group.add(mesh);
+  interactiveMeshes.push(mesh);
+
+  if (wireOn) {
+    const wireMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.1 });
+    group.add(new THREE.Mesh(geo, wireMat));
+  }
+  return group;
+}
+
+function buildImplicitCurve2DIn3D(parsedFn, L, N, colorHex = 0x00d2ff, zOffset = 0.015) {
+  const res = Math.max(90, N * 2);
+  const size = res + 1;
+  const grid = new Float32Array(size * size);
+  for (let i = 0; i <= res; i++) {
+    const x = -L + (2 * L * i) / res;
+    for (let j = 0; j <= res; j++) {
+      const y = -L + (2 * L * j) / res;
+      const v = parsedFn.evaluate({ ...currentParams, x, y, z: 0, t: animTime }, useDegrees);
+      grid[i * size + j] = isNaN(v) ? 1e6 : v;
+    }
+  }
+
+  const points = [];
+  const step = (2 * L) / res;
+  for (let i = 0; i < res; i++) {
+    const x = -L + i * step;
+    for (let j = 0; j < res; j++) {
+      const y = -L + j * step;
+      const v00 = grid[i * size + j];
+      const v10 = grid[(i + 1) * size + j];
+      const v11 = grid[(i + 1) * size + (j + 1)];
+      const v01 = grid[i * size + (j + 1)];
+      if (Math.abs(v00) > 1e4 || Math.abs(v10) > 1e4 || Math.abs(v11) > 1e4 || Math.abs(v01) > 1e4) continue;
+
+      const edges = [];
+      if ((v00 < 0) !== (v10 < 0)) edges.push([x + step * (-v00 / (v10 - v00)), y]);
+      if ((v10 < 0) !== (v11 < 0)) edges.push([x + step, y + step * (-v10 / (v11 - v10))]);
+      if ((v11 < 0) !== (v01 < 0)) edges.push([x + step * (1 - (-v11 / (v01 - v11))), y + step]);
+      if ((v01 < 0) !== (v00 < 0)) edges.push([x, y + step * (1 - (-v01 / (v00 - v01)))]);
+
+      if (edges.length >= 2) {
+        points.push(new THREE.Vector3(edges[0][0], edges[0][1], zOffset));
+        points.push(new THREE.Vector3(edges[1][0], edges[1][1], zOffset));
+      }
+    }
+  }
+  const geo = new THREE.BufferGeometry().setFromPoints(points);
+  const mat = new THREE.LineBasicMaterial({ color: colorHex });
+  const segs = new THREE.LineSegments(geo, mat);
+  segs.userData = { type: 'conic2d', parsedFn };
+  interactiveMeshes.push(segs);
+  return segs;
+}
+
+function buildCurve2DIn3D(parsedFn, L, colorHex = 0x00d2ff, zElevation = 0.015) {
+  const group = new THREE.Group();
+  const samples = 600;
+  let currentSegment = [];
+  const yClip = L * 1.35;
+  let prevY = null;
+
+  function flushSegment() {
+    if (currentSegment.length > 1) {
+      const geo = new THREE.BufferGeometry().setFromPoints(currentSegment);
+      const line = new THREE.Line(geo, new THREE.LineBasicMaterial({ color: colorHex }));
+      line.userData = { type: 'curve2d', parsedFn };
+      group.add(line);
+      interactiveMeshes.push(line);
+    }
+    currentSegment = [];
+  }
+
+  for (let i = 0; i <= samples; i++) {
+    const x = -L + (2 * L * i) / samples;
+    const y = parsedFn.evaluate({ ...currentParams, x, t: animTime }, useDegrees);
+    if (isNaN(y) || Math.abs(y) > yClip || (prevY !== null && Math.abs(y - prevY) > L * 1.2)) {
+      flushSegment();
+      prevY = null;
+    } else {
+      currentSegment.push(new THREE.Vector3(x, y, zElevation));
+      prevY = y;
+    }
+  }
+  flushSegment();
+  return group;
+}
+
+/* ============================================================================
+   9. MAIN PLOT DISPATCHER
+   ============================================================================ */
+function evaluateAndPlot() {
+  const errBox = document.getElementById('error-box');
+  errBox.style.display = 'none';
+  errBox.textContent = '';
+
+  clearGroup(plotGroup);
+  clearGroup(probeGroup);
+  interactiveMeshes = [];
+
+  const L = Math.max(2, parseFloat(document.getElementById('ctrl-domain').value) || 8);
+  const N = parseInt(document.getElementById('ctrl-res').value, 10) || 75;
+  const colormap = document.getElementById('ctrl-colormap').value;
+  const opacity = parseFloat(document.getElementById('ctrl-opacity').value);
+  const wireOn = document.getElementById('chk-wireframe').checked;
+
+  const legendList = [];
+
+  try {
+    if (appMode === 'parametric') {
+      if (lastAutoKind !== 'parametric') {
+        lastAutoKind = 'parametric';
+        setDimensionView('3D', false);
+      } else {
+        buildCoordinateAxes3D(L);
+      }
+      const sub = document.getElementById('param-subtype').value;
+      const px = MathEngine.parse(document.getElementById('param-x').value);
+      const py = MathEngine.parse(document.getElementById('param-y').value);
+      const pz = MathEngine.parse(document.getElementById('param-z').value);
+      const uMin = parseFloat(document.getElementById('param-umin').value) || -6.28;
+      const uMax = parseFloat(document.getElementById('param-umax').value) || 6.28;
+
+      syncParameterSliders([...px.params, ...py.params, ...pz.params]);
+
+      if (sub === 'curve') {
+        document.getElementById('detected-type-badge').textContent = '3D Parametric Curve r(t)';
+        const pts = [];
+        const steps = 450;
+        for (let i = 0; i <= steps; i++) {
+          const tVal = uMin + ((uMax - uMin) * i) / steps;
+          const env = { ...currentParams, t: tVal, u: tVal };
+          const x = px.evaluate(env, useDegrees);
+          const y = py.evaluate(env, useDegrees);
+          const z = pz.evaluate(env, useDegrees);
+          if (!isNaN(x) && !isNaN(y) && !isNaN(z)) pts.push(new THREE.Vector3(x, y, z));
+        }
+        if (pts.length > 1) {
+          const curve = new THREE.CatmullRomCurve3(pts);
+          const tubeGeo = new THREE.TubeGeometry(curve, 320, 0.045, 10, false);
+          const tubeMat = new THREE.MeshPhongMaterial({ color: 0x00d2ff, shininess: 80 });
+          const mesh = new THREE.Mesh(tubeGeo, tubeMat);
+          plotGroup.add(mesh);
+          interactiveMeshes.push(mesh);
+        }
+        const t0Slider = document.getElementById('rng-param-t0');
+        t0Slider.min = uMin;
+        t0Slider.max = uMax;
+        const t0 = animPlaying ? (uMin + ((animTime * 1.5) % (uMax - uMin))) : parseFloat(t0Slider.value);
+        const env0 = { ...currentParams, t: t0, u: t0 };
+        const x0 = px.evaluate(env0, useDegrees), y0 = py.evaluate(env0, useDegrees), z0 = pz.evaluate(env0, useDegrees);
+        if (!isNaN(x0) && !isNaN(y0) && !isNaN(z0)) {
+          const sph = createCrispMarker3D(0xffb703, 0.12);
+          sph.position.set(x0, y0, z0);
+          plotGroup.add(sph);
+          const vecLen = Math.hypot(x0, y0, z0);
+          if (vecLen > 0.05) {
+            const dir = new THREE.Vector3(x0, y0, z0).normalize();
+            plotGroup.add(new THREE.ArrowHelper(dir, new THREE.Vector3(0,0,0), vecLen, 0xffb703, 0.3, 0.16));
+          }
+          updateExplanation('3D Parametric Space Curve r(t)',
+            'Traces a particle position vector r(t) = (x(t), y(t), z(t)) through 3D space as parameter t varies.',
+            `r(${t0.toFixed(2)}) = (${x0.toFixed(2)}, ${y0.toFixed(2)}, ${z0.toFixed(2)}) | |r| = ${vecLen.toFixed(2)}`);
+        }
+        legendList.push({ color: '#00d2ff', text: `r(t) = (${document.getElementById('param-x').value}, ...)` });
+        legendList.push({ color: '#ffb703', text: 'Position Vector r(t₀)' });
+      } else {
+        document.getElementById('detected-type-badge').textContent = '3D Parametric Surface r(u,v)';
+        const vMin = parseFloat(document.getElementById('param-vmin').value) || 0;
+        const vMax = parseFloat(document.getElementById('param-vmax').value) || 6.28;
+        const positions = [], colors = [], indices = [];
+        for (let i = 0; i <= N; i++) {
+          const u = uMin + ((uMax - uMin) * i) / N;
+          for (let j = 0; j <= N; j++) {
+            const v = vMin + ((vMax - vMin) * j) / N;
+            const env = { ...currentParams, u, v, t: animTime };
+            const x = px.evaluate(env, useDegrees) || 0;
+            const y = py.evaluate(env, useDegrees) || 0;
+            const z = pz.evaluate(env, useDegrees) || 0;
+            positions.push(x, y, z);
+            const col = mapColor(i / N, colormap);
+            colors.push(col.r, col.g, col.b);
+          }
+        }
+        for (let i = 0; i < N; i++) {
+          for (let j = 0; j < N; j++) {
+            const a = i * (N + 1) + j, b = (i + 1) * (N + 1) + j;
+            const c = (i + 1) * (N + 1) + (j + 1), d = i * (N + 1) + (j + 1);
+            indices.push(a, b, d, b, c, d);
+          }
+        }
+        const geo = new THREE.BufferGeometry();
+        geo.setIndex(indices);
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        geo.computeVertexNormals();
+        const mesh = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ vertexColors: true, side: THREE.DoubleSide, transparent: opacity < 0.99, opacity }));
+        plotGroup.add(mesh);
+        interactiveMeshes.push(mesh);
+        if (wireOn) plotGroup.add(new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.12 })));
+        legendList.push({ color: '#a855f7', text: 'Parametric Surface r(u,v)' });
+        updateExplanation('Parametric Surface r(u,v)',
+          'Maps a 2D parameter rectangle (u, v) smoothly into 3D space via three coordinate functions.',
+          `u ∈ [${uMin}, ${uMax}], v ∈ [${vMin}, ${vMax}]`);
+      }
+      renderLegend(legendList);
+      return;
+    }
+
+    const mainEqStr = document.getElementById('eq-main').value;
+    const classified = classifyEquation(mainEqStr);
+    view2D.classifiedMain = classified;
+    document.getElementById('detected-type-badge').textContent = classified.label;
+
+    let allParams = [...classified.parsed.params];
+    let compClassified = null;
+    if (document.getElementById('chk-compare').checked) {
+      const compStr = document.getElementById('eq-compare').value.trim();
+      if (compStr) {
+        compClassified = classifyEquation(compStr);
+        allParams.push(...compClassified.parsed.params);
+      }
+    }
+    view2D.classifiedComp = compClassified;
+    syncParameterSliders(allParams);
+
+    const targetDim = classified.is2D ? '2D' : '3D';
+    if (lastAutoKind !== classified.kind) {
+      lastAutoKind = classified.kind;
+      setDimensionView(targetDim, false);
+    } else if (currentViewDim === '3D') {
+      buildCoordinateAxes3D(L);
+    }
+
+    // Build 3D objects for 3D mode (and keep 2D infinite canvas updated in 2D mode)
+    if (classified.kind === 'ode1' || (appMode === 'calculus' && document.getElementById('calc-submode').value === 'ode1')) {
+      renderFirstOrderODE(classified.parsed, L, legendList);
+    } else if (classified.kind === 'ode2' || (appMode === 'calculus' && document.getElementById('calc-submode').value === 'ode2')) {
+      renderSecondOrderODE(L, legendList);
+    } else if (classified.kind === 'implicit3d' || (appMode === 'implicit' && classified.kind !== 'implicit2d')) {
+      const impGroup = buildImplicitSurface3D(classified.parsed, L, N, colormap, opacity, wireOn);
+      plotGroup.add(impGroup);
+      legendList.push({ color: '#00d2ff', text: mainEqStr });
+      updateExplanation(`Implicit Surface (${mainEqStr})`,
+        'Rendered in 3D as the zero isosurface F(x, y, z) = 0 using Marching Tetrahedra.',
+        `Domain: [-${L}, ${L}]³ | Grid: ${Math.min(48, Math.floor(N*0.55))}³ voxels`);
+    } else if (classified.kind === 'implicit2d') {
+      plotGroup.add(buildImplicitCurve2DIn3D(classified.parsed, L, N, 0x00d2ff));
+      legendList.push({ color: '#c74440', text: `Conic / Implicit Curve: ${mainEqStr}` });
+      updateExplanation(`Planar Conic / Implicit Curve (${mainEqStr})`,
+        'Displayed on the Infinite 2D Precision Plane with 5×5 sub-grid squares.',
+        'Scroll to zoom infinitely | Shift+Scroll: Stretch X | Alt+Scroll: Stretch Y');
+    } else if (classified.kind === 'curve2d') {
+      plotGroup.add(buildCurve2DIn3D(classified.parsed, L, 0x00d2ff, 0.015));
+      legendList.push({ color: view2D.lightTheme ? '#c74440' : '#00d2ff', text: mainEqStr });
+      if (appMode === 'calculus') {
+        renderCalculus1D(classified.parsed, L, legendList);
+      } else if (appMode === 'integral') {
+        renderIntegral1D(classified.parsed, L, legendList);
+      } else if (appMode === 'roots') {
+        renderRootsAndExtrema1D(classified.parsed, L, legendList);
+      } else {
+        updateExplanation(`2D Infinite Function Curve (${mainEqStr})`,
+          'Rendered on the Desmos-style Infinite 2D Plane with 5×5 minor sub-squares. Line thickness and point dots stay razor-sharp at any zoom level!',
+          'Scroll: Zoom | Shift+Scroll: Horizontal X-Zoom | Alt+Scroll: Vertical Y-Zoom | Drag: Pan');
+      }
+    } else if (classified.kind === 'surface_explicit') {
+      const { group } = buildExplicitSurfaceMesh(classified.parsed, L, N, colormap, opacity, wireOn);
+      plotGroup.add(group);
+      legendList.push({ color: '#00d2ff', text: mainEqStr });
+
+      if (appMode === 'function') {
+        renderFunctionCrossSections(classified.parsed, L, legendList);
+      } else if (appMode === 'calculus') {
+        renderCalculus2DPartials(classified.parsed, L, legendList);
+      } else if (appMode === 'integral') {
+        renderIntegral2DVolume(classified.parsed, L, legendList);
+      } else if (appMode === 'roots') {
+        renderSurfaceZeroContourAndExtrema(classified.parsed, L, N, legendList);
+      }
+    }
+
+    if (compClassified) {
+      if (compClassified.kind === 'surface_explicit') {
+        const compSurf = buildExplicitSurfaceMesh(compClassified.parsed, L, N, 'cool', opacity * 0.78, false, 0xff4d6d);
+        plotGroup.add(compSurf.group);
+        legendList.push({ color: '#ff4d6d', text: `Compare: ${document.getElementById('eq-compare').value}` });
+        if (appMode === 'roots' && classified.kind === 'surface_explicit') {
+          renderTwoSurfaceIntersection(classified.parsed, compClassified.parsed, L, N, legendList);
+        }
+      } else if (compClassified.kind === 'curve2d') {
+        plotGroup.add(buildCurve2DIn3D(compClassified.parsed, L, 0xff4d6d, 0.025));
+        legendList.push({ color: '#2d70b3', text: `Compare: ${document.getElementById('eq-compare').value}` });
+      } else if (compClassified.kind === 'implicit3d') {
+        plotGroup.add(buildImplicitSurface3D(compClassified.parsed, L, N, 'thermal', opacity * 0.7, false, 0xff4d6d));
+        legendList.push({ color: '#ff4d6d', text: `Compare: ${document.getElementById('eq-compare').value}` });
+      }
+    }
+
+    renderLegend(legendList);
+    render2DInfiniteScene();
+  } catch (err) {
+    errBox.style.display = 'block';
+    errBox.textContent = `Math Engine Error: ${err.message}`;
+  }
+}
+
+function createCrispMarker3D(colorHex = 0x00f59b, radius = 0.085) {
+  const grp = new THREE.Group();
+  const core = new THREE.Mesh(
+    new THREE.SphereGeometry(radius, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0xffffff })
+  );
+  const halo = new THREE.Mesh(
+    new THREE.SphereGeometry(radius * 1.5, 16, 16),
+    new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0.85 })
+  );
+  grp.add(halo);
+  grp.add(core);
+  return grp;
+}
+
+/* ============================================================================
+   10. SPECIALIZED VISUALISATIONS (CROSS-SECTIONS, CALCULUS, INTEGRALS, ROOTS)
+   ============================================================================ */
+function renderFunctionCrossSections(parsedFn, L, legendList) {
+  const showX = document.getElementById('chk-slice-x').checked;
+  const showY = document.getElementById('chk-slice-y').checked;
+  const showContours = document.getElementById('chk-contours').checked;
+  const x0 = parseFloat(document.getElementById('rng-slice-x').value);
+  const y0 = parseFloat(document.getElementById('rng-slice-y').value);
+
+  if (showX) {
+    const planeGeo = new THREE.PlaneGeometry(2 * L, 2 * L);
+    const planeMat = new THREE.MeshBasicMaterial({ color: 0xffb703, side: THREE.DoubleSide, transparent: true, opacity: 0.14 });
+    const plane = new THREE.Mesh(planeGeo, planeMat);
+    plane.rotation.y = Math.PI / 2;
+    plane.position.set(x0, 0, 0);
+    plotGroup.add(plane);
+
+    const pts = [];
+    for (let i = 0; i <= 160; i++) {
+      const y = -L + (2 * L * i) / 160;
+      const z = parsedFn.evaluate({ ...currentParams, x: x0, y, t: animTime }, useDegrees);
+      if (!isNaN(z) && Math.abs(z) <= L * 2.5) pts.push(new THREE.Vector3(x0, y, z));
+    }
+    if (pts.length > 1) {
+      plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xffb703 })));
+      legendList.push({ color: '#ffb703', text: `Cross-Section x = ${x0.toFixed(1)}` });
+    }
+  }
+
+  if (showY) {
+    const planeGeo = new THREE.PlaneGeometry(2 * L, 2 * L);
+    const planeMat = new THREE.MeshBasicMaterial({ color: 0x00f59b, side: THREE.DoubleSide, transparent: true, opacity: 0.14 });
+    const plane = new THREE.Mesh(planeGeo, planeMat);
+    plane.rotation.x = Math.PI / 2;
+    plane.position.set(0, y0, 0);
+    plotGroup.add(plane);
+
+    const pts = [];
+    for (let i = 0; i <= 160; i++) {
+      const x = -L + (2 * L * i) / 160;
+      const z = parsedFn.evaluate({ ...currentParams, x, y: y0, t: animTime }, useDegrees);
+      if (!isNaN(z) && Math.abs(z) <= L * 2.5) pts.push(new THREE.Vector3(x, y0, z));
+    }
+    if (pts.length > 1) {
+      plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0x00f59b })));
+      legendList.push({ color: '#00f59b', text: `Cross-Section y = ${y0.toFixed(1)}` });
+    }
+  }
+
+  if (showContours) {
+    const levels = [-4, -2, -1, 0, 1, 2, 4];
+    for (const cVal of levels) {
+      const exprStr = `(${document.getElementById('eq-main').value.split('=').pop()}) - (${cVal})`;
+      try {
+        const contourParsed = MathEngine.parse(exprStr);
+        plotGroup.add(buildImplicitCurve2DIn3D(contourParsed, L, 45, 0xe2e8f0, -L));
+      } catch (_) {}
+    }
+    legendList.push({ color: '#e2e8f0', text: 'Projected Contours on z = -L' });
+  }
+
+  const zVal = parsedFn.evaluate({ ...currentParams, x: x0, y: y0, t: animTime }, useDegrees);
+  const h = 1e-4;
+  const dzdx = (parsedFn.evaluate({ ...currentParams, x: x0 + h, y: y0, t: animTime }, useDegrees) - parsedFn.evaluate({ ...currentParams, x: x0 - h, y: y0, t: animTime }, useDegrees)) / (2 * h);
+  const dzdy = (parsedFn.evaluate({ ...currentParams, x: x0, y: y0 + h, t: animTime }, useDegrees) - parsedFn.evaluate({ ...currentParams, x: x0, y: y0 - h, t: animTime }, useDegrees)) / (2 * h);
+  updateExplanation(`3D Surface: ${document.getElementById('eq-main').value}`,
+    'Every 3D surface z = f(x,y) is built from 2D cross-sectional curves. Toggle "Fix x = x₀" or "Fix y = y₀" to slice the surface with planes.',
+    `At (${x0.toFixed(1)}, ${y0.toFixed(1)}): z = ${isNaN(zVal) ? 'undef' : zVal.toFixed(3)} | ∂z/∂x ≈ ${isNaN(dzdx) ? 'undef' : dzdx.toFixed(2)}, ∂z/∂y ≈ ${isNaN(dzdy) ? 'undef' : dzdy.toFixed(2)}`);
+}
+
+function renderCalculus1D(parsedFn, L, legendList) {
+  const x0 = parseFloat(document.getElementById('rng-calc-x').value);
+  const h = 1e-4;
+  const y0 = parsedFn.evaluate({ ...currentParams, x: x0, t: animTime }, useDegrees);
+  const yp = parsedFn.evaluate({ ...currentParams, x: x0 + h, t: animTime }, useDegrees);
+  const ym = parsedFn.evaluate({ ...currentParams, x: x0 - h, t: animTime }, useDegrees);
+  const slope = (yp - ym) / (2 * h);
+  const secondDeriv = (yp - 2 * y0 + ym) / (h * h);
+
+  if (!isNaN(y0) && !isNaN(slope)) {
+    legendList.push({ color: '#27ae60', text: `Tangent at x₀=${x0.toFixed(2)} (m=${slope.toFixed(2)})` });
+  }
+  if (document.getElementById('chk-show-f1').checked) {
+    legendList.push({ color: '#e67e22', text: "First Derivative f'(x)" });
+  }
+  if (document.getElementById('chk-show-f2').checked) {
+    legendList.push({ color: '#8e44ad', text: "Second Derivative f''(x)" });
+  }
+
+  const concavity = secondDeriv > 0.05 ? 'Concave Up (∪)' : (secondDeriv < -0.05 ? 'Concave Down (∩)' : 'Inflection / Linear');
+  updateExplanation('Differential Calculus Explorer (1D)',
+    'The first derivative f\'(x₀) gives the instantaneous slope of the green tangent line. The second derivative f\'\'(x₀) measures curvature.',
+    `x₀ = ${x0.toFixed(2)} | f(x₀) = ${y0.toFixed(3)} | Slope f'(x₀) = ${slope.toFixed(3)} | f''(x₀) = ${secondDeriv.toFixed(3)} (${concavity})`);
+}
+
+function renderCalculus2DPartials(parsedFn, L, legendList) {
+  const x0 = parseFloat(document.getElementById('rng-calc-x').value);
+  const y0 = parseFloat(document.getElementById('rng-calc-y').value);
+  const h = 1e-4;
+  const z0 = parsedFn.evaluate({ ...currentParams, x: x0, y: y0, t: animTime }, useDegrees);
+  if (isNaN(z0)) return;
+
+  const fx = (parsedFn.evaluate({ ...currentParams, x: x0 + h, y: y0, t: animTime }, useDegrees) - parsedFn.evaluate({ ...currentParams, x: x0 - h, y: y0, t: animTime }, useDegrees)) / (2 * h);
+  const fy = (parsedFn.evaluate({ ...currentParams, x: x0, y: y0 + h, t: animTime }, useDegrees) - parsedFn.evaluate({ ...currentParams, x: x0, y: y0 - h, t: animTime }, useDegrees)) / (2 * h);
+
+  const origin = new THREE.Vector3(x0, y0, z0);
+  const marker = createCrispMarker3D(0x00d2ff, 0.1);
+  marker.position.copy(origin);
+  plotGroup.add(marker);
+
+  const tx = new THREE.Vector3(1, 0, fx).normalize();
+  plotGroup.add(new THREE.ArrowHelper(tx, origin, 1.8, 0xffb703, 0.28, 0.16));
+  legendList.push({ color: '#ffb703', text: `x-Tangent (∂f/∂x = ${fx.toFixed(2)})` });
+
+  const ty = new THREE.Vector3(0, 1, fy).normalize();
+  plotGroup.add(new THREE.ArrowHelper(ty, origin, 1.8, 0x00f59b, 0.28, 0.16));
+  legendList.push({ color: '#00f59b', text: `y-Tangent (∂f/∂y = ${fy.toFixed(2)})` });
+
+  if (document.getElementById('chk-probe-vec').checked) {
+    const norm = new THREE.Vector3(-fx, -fy, 1).normalize();
+    plotGroup.add(new THREE.ArrowHelper(norm, origin, 1.8, 0xff4d6d, 0.28, 0.16));
+    legendList.push({ color: '#ff4d6d', text: 'Surface Normal n' });
+  }
+
+  const gradMag = Math.hypot(fx, fy);
+  updateExplanation('Partial Derivatives & Gradient Explorer',
+    '∂f/∂x measures the slope when moving parallel to the x-axis (amber vector), while ∂f/∂y measures the slope along the y-axis (green vector).',
+    `At (${x0.toFixed(2)}, ${y0.toFixed(2)}, ${z0.toFixed(2)}): ∂f/∂x = ${fx.toFixed(3)}, ∂f/∂y = ${fy.toFixed(3)} | |∇f| = ${gradMag.toFixed(3)}`);
+}
+
+function renderFirstOrderODE(parsedFn, L, legendList) {
+  const x0 = parseFloat(document.getElementById('rng-calc-x').value);
+  const y0 = parseFloat(document.getElementById('rng-calc-y').value);
+  legendList.push({ color: '#64748b', text: 'Direction / Slope Field' });
+  legendList.push({ color: '#c74440', text: `RK4 Solution through (${x0.toFixed(1)}, ${y0.toFixed(1)})` });
+  updateExplanation('1st-Order Differential Equation (RK4 Numerical Solver)',
+    'Displays the slope field dy/dx = f(x,y) and integrates the numerical solution curve using 4th-Order Runge-Kutta (RK4) from your movable initial condition (x₀, y₀).',
+    `Initial Condition: y(${x0.toFixed(2)}) = ${y0.toFixed(2)}`);
+}
+
+function renderSecondOrderODE(L, legendList) {
+  const y0 = parseFloat(document.getElementById('rng-calc-x').value) || 2.0;
+  const v0 = parseFloat(document.getElementById('rng-calc-y').value) || 0.0;
+  const omega = currentParams['ω'] || 1.5;
+  const zeta = currentParams['a'] !== undefined ? Math.max(0, currentParams['a'] * 0.15) : 0.1;
+
+  const dispPts = [], phasePts = [];
+  let y = y0, v = v0, t = -L;
+  const dt = 0.02;
+  while (t <= L) {
+    dispPts.push(new THREE.Vector3(t, y, 0.03));
+    phasePts.push(new THREE.Vector3(t, y, v));
+    const acc = (yy, vv) => -2 * zeta * omega * vv - omega * omega * yy;
+    const k1y = v, k1v = acc(y, v);
+    const k2y = v + 0.5*dt*k1v, k2v = acc(y + 0.5*dt*k1y, v + 0.5*dt*k1v);
+    const k3y = v + 0.5*dt*k2v, k3v = acc(y + 0.5*dt*k2y, v + 0.5*dt*k2v);
+    const k4y = v + dt*k3v, k4v = acc(y + dt*k3y, v + dt*k3v);
+    y += (dt / 6) * (k1y + 2*k2y + 2*k3y + k4y);
+    v += (dt / 6) * (k1v + 2*k2v + 2*k3v + k4v);
+    t += dt;
+  }
+  plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(dispPts), new THREE.LineBasicMaterial({ color: 0x00d2ff })));
+  plotGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(phasePts), new THREE.LineBasicMaterial({ color: 0xa855f7 })));
+  legendList.push({ color: '#00d2ff', text: 'Displacement y(t) in XY Plane' });
+  legendList.push({ color: '#a855f7', text: '3D Phase Trajectory (t, y, dy/dt)' });
+  updateExplanation('2nd-Order Harmonic Oscillator ODE',
+    'Solves d²y/dt² + 2ζω(dy/dt) + ω²y = 0 numerically. The cyan curve shows displacement y(t), while the purple 3D spiral shows the trajectory in (t, y, v) phase space.',
+    `IC: y₀ = ${y0.toFixed(2)}, v₀ = ${v0.toFixed(2)} | ω = ${omega.toFixed(2)}`);
+}
+
+function renderIntegral1D(parsedFn, L, legendList) {
+  let a = parseFloat(document.getElementById('rng-int-a').value);
+  let b = parseFloat(document.getElementById('rng-int-b').value);
+  const signFactor = b >= a ? 1 : -1;
+  const lo = Math.min(a, b), hi = Math.max(a, b);
+  const N = 160;
+  const dx = (hi - lo) / N;
+  let simpsonSum = 0;
+
+  for (let i = 0; i < N; i++) {
+    const x1 = lo + i * dx, x2 = x1 + dx, xm = 0.5 * (x1 + x2);
+    const y1 = parsedFn.evaluate({ ...currentParams, x: x1, t: animTime }, useDegrees);
+    const y2 = parsedFn.evaluate({ ...currentParams, x: x2, t: animTime }, useDegrees);
+    const ym = parsedFn.evaluate({ ...currentParams, x: xm, t: animTime }, useDegrees);
+    if (!isNaN(y1) && !isNaN(y2) && !isNaN(ym)) {
+      simpsonSum += (dx / 6) * (y1 + 4 * ym + y2);
+    }
+  }
+
+  legendList.push({ color: '#2d70b3', text: `Signed Area [${a.toFixed(1)}, ${b.toFixed(1)}]` });
+  const netIntegral = signFactor * simpsonSum;
+  updateExplanation('Definite Integral & Signed Accumulation Explorer',
+    'A definite integral ∫ f(x) dx measures net signed accumulation between the curve and y = 0.',
+    `∫ from a=${a.toFixed(2)} to b=${b.toFixed(2)} ≈ ${netIntegral.toFixed(5)} (Simpson's Numerical Rule)`);
+}
+
+function renderIntegral2DVolume(parsedFn, L, legendList) {
+  const a = Math.min(parseFloat(document.getElementById('rng-int-a').value), parseFloat(document.getElementById('rng-int-b').value));
+  const b = Math.max(parseFloat(document.getElementById('rng-int-a').value), parseFloat(document.getElementById('rng-int-b').value));
+  const c = parseFloat(document.getElementById('rng-int-c').value);
+
+  const nx = 14, ny = 14;
+  const dx = (b - a) / nx, dy = (2 * c) / ny;
+  let totalVol = 0;
+
+  for (let i = 0; i < nx; i++) {
+    const x = a + (i + 0.5) * dx;
+    for (let j = 0; j < ny; j++) {
+      const y = -c + (j + 0.5) * dy;
+      const z = parsedFn.evaluate({ ...currentParams, x, y, t: animTime }, useDegrees);
+      if (isNaN(z) || Math.abs(z) < 0.02) continue;
+      const h = Math.min(Math.abs(z), L * 2.5);
+      totalVol += z * dx * dy;
+      const boxGeo = new THREE.BoxGeometry(dx * 0.9, dy * 0.9, h);
+      const boxMat = new THREE.MeshPhongMaterial({
+        color: z >= 0 ? 0x00f59b : 0xff4d6d,
+        transparent: true,
+        opacity: 0.55
+      });
+      const colMesh = new THREE.Mesh(boxGeo, boxMat);
+      colMesh.position.set(x, y, z >= 0 ? h / 2 : -h / 2);
+      plotGroup.add(colMesh);
+    }
+  }
+  legendList.push({ color: '#00f59b', text: '2D Riemann Volume Columns' });
+  updateExplanation('Double Integral Volume Explorer ∬ f(x,y) dA',
+    'Approximates the signed volume between z = f(x,y) and the plane z = 0 over the rectangular domain [a, b] × [-c, c].',
+    `Domain: x ∈ [${a.toFixed(1)}, ${b.toFixed(1)}], y ∈ [-${c.toFixed(1)}, ${c.toFixed(1)}] | Net Volume ≈ ${totalVol.toFixed(3)}`);
+}
+
+function renderRootsAndExtrema1D(parsedFn, L, legendList) {
+  legendList.push({ color: '#f39c12', text: 'Real Roots f(x) = 0' });
+  legendList.push({ color: '#27ae60', text: "Critical Extrema f'(x) = 0" });
+  updateExplanation('1D Roots & Critical Points Analysis',
+    'Calculates real zeros f(x) = 0 via bisection (orange dots) and candidate local extrema where f\'(x) = 0 (green dots) across your current visible 2D window.',
+    'Pan or zoom the 2D canvas to automatically detect roots and extrema over any interval!');
+}
+
+function renderSurfaceZeroContourAndExtrema(parsedFn, L, N, legendList) {
+  plotGroup.add(buildImplicitCurve2DIn3D(parsedFn, L, N, 0xffb703, 0.03));
+  legendList.push({ color: '#ffb703', text: 'Zero Contour z = f(x,y) = 0' });
+
+  const h = 1e-3;
+  const found = [];
+  const step = (2 * L) / 24;
+  for (let x = -L + step; x <= L - step; x += step) {
+    for (let y = -L + step; y <= L - step; y += step) {
+      let cx = x, cy = y;
+      for (let it = 0; it < 4; it++) {
+        const f0 = parsedFn.evaluate({ ...currentParams, x: cx, y: cy, t: animTime }, useDegrees);
+        const fx = (parsedFn.evaluate({ ...currentParams, x: cx+h, y: cy, t: animTime }, useDegrees) - parsedFn.evaluate({ ...currentParams, x: cx-h, y: cy, t: animTime }, useDegrees)) / (2*h);
+        const fy = (parsedFn.evaluate({ ...currentParams, x: cx, y: cy+h, t: animTime }, useDegrees) - parsedFn.evaluate({ ...currentParams, x: cx, y: cy-h, t: animTime }, useDegrees)) / (2*h);
+        if (Math.hypot(fx, fy) < 1e-3) break;
+        const fxx = (parsedFn.evaluate({ ...currentParams, x: cx+h, y: cy, t: animTime }, useDegrees) - 2*f0 + parsedFn.evaluate({ ...currentParams, x: cx-h, y: cy, t: animTime }, useDegrees)) / (h*h);
+        const fyy = (parsedFn.evaluate({ ...currentParams, x: cx, y: cy+h, t: animTime }, useDegrees) - 2*f0 + parsedFn.evaluate({ ...currentParams, x: cx, y: cy-h, t: animTime }, useDegrees)) / (h*h);
+        if (Math.abs(fxx) > 1e-3) cx -= fx / fxx;
+        if (Math.abs(fyy) > 1e-3) cy -= fy / fyy;
+      }
+      if (Math.abs(cx) > L || Math.abs(cy) > L) continue;
+      const fx = (parsedFn.evaluate({ ...currentParams, x: cx+h, y: cy, t: animTime }, useDegrees) - parsedFn.evaluate({ ...currentParams, x: cx-h, y: cy, t: animTime }, useDegrees)) / (2*h);
+      const fy = (parsedFn.evaluate({ ...currentParams, x: cx, y: cy+h, t: animTime }, useDegrees) - parsedFn.evaluate({ ...currentParams, x: cx, y: cy-h, t: animTime }, useDegrees)) / (2*h);
+      if (Math.hypot(fx, fy) < 0.04) {
+        if (!found.some(p => Math.hypot(p.x - cx, p.y - cy) < 0.45)) {
+          const cz = parsedFn.evaluate({ ...currentParams, x: cx, y: cy, t: animTime }, useDegrees);
+          const fxx = (parsedFn.evaluate({ ...currentParams, x: cx+h, y: cy, t: animTime }, useDegrees) - 2*cz + parsedFn.evaluate({ ...currentParams, x: cx-h, y: cy, t: animTime }, useDegrees)) / (h*h);
+          const fyy = (parsedFn.evaluate({ ...currentParams, x: cx, y: cy+h, t: animTime }, useDegrees) - 2*cz + parsedFn.evaluate({ ...currentParams, x: cx, y: cy-h, t: animTime }, useDegrees)) / (h*h);
+          const fxy = (parsedFn.evaluate({ ...currentParams, x: cx+h, y: cy+h, t: animTime }, useDegrees) - parsedFn.evaluate({ ...currentParams, x: cx+h, y: cy-h, t: animTime }, useDegrees) - parsedFn.evaluate({ ...currentParams, x: cx-h, y: cy+h, t: animTime }, useDegrees) + parsedFn.evaluate({ ...currentParams, x: cx-h, y: cy-h, t: animTime }, useDegrees)) / (4*h*h);
+          const D = fxx * fyy - fxy * fxy;
+          let kind = 'Saddle Point';
+          let col = 0xa855f7;
+          if (D > 0.01) {
+            kind = fxx < 0 ? 'Local Max' : 'Local Min';
+            col = fxx < 0 ? 0x00f59b : 0xff4d6d;
+          }
+          if (!isNaN(cz) && Math.abs(cz) <= L * 2.5 && found.length < 12) {
+            found.push({ x: cx, y: cy, z: cz, kind, col });
+          }
+        }
+      }
+    }
+  }
+
+  for (const pt of found) {
+    const s = createCrispMarker3D(pt.col, 0.11);
+    s.position.set(pt.x, pt.y, pt.z);
+    plotGroup.add(s);
+  }
+  legendList.push({ color: '#a855f7', text: `Critical Points ∇f=0 (${found.length} found)` });
+  updateExplanation('2D Zero Contour & Hessian Critical Point Classification',
+    'Highlights the z = 0 intersection curve in amber and classifies candidate stationary points (∇f = 0) using the Hessian determinant D = fxx·fyy - fxy².',
+    found.map(p => `${p.kind} at (${p.x.toFixed(2)}, ${p.y.toFixed(2)}, ${p.z.toFixed(2)})`).slice(0, 3).join(' | ') || 'No stationary points found in domain');
+}
+
+function renderTwoSurfaceIntersection(fn1, fn2, L, N, legendList) {
+  const res = Math.max(60, N);
+  const size = res + 1;
+  const diffGrid = new Float32Array(size * size);
+  for (let i = 0; i <= res; i++) {
+    const x = -L + (2 * L * i) / res;
+    for (let j = 0; j <= res; j++) {
+      const y = -L + (2 * L * j) / res;
+      const z1 = fn1.evaluate({ ...currentParams, x, y, t: animTime }, useDegrees);
+      const z2 = fn2.evaluate({ ...currentParams, x, y, t: animTime }, useDegrees);
+      diffGrid[i * size + j] = (isNaN(z1) || isNaN(z2)) ? 1e6 : (z1 - z2);
+    }
+  }
+  const pts = [];
+  const step = (2 * L) / res;
+  for (let i = 0; i < res; i++) {
+    const x = -L + i * step;
+    for (let j = 0; j < res; j++) {
+      const y = -L + j * step;
+      const v00 = diffGrid[i * size + j], v10 = diffGrid[(i + 1) * size + j];
+      const v11 = diffGrid[(i + 1) * size + (j + 1)], v01 = diffGrid[i * size + (j + 1)];
+      if ([v00, v10, v11, v01].some(v => Math.abs(v) > 1e4)) continue;
+      const edges = [];
+      if ((v00 < 0) !== (v10 < 0)) edges.push([x + step * (-v00 / (v10 - v00)), y]);
+      if ((v10 < 0) !== (v11 < 0)) edges.push([x + step, y + step * (-v10 / (v11 - v10))]);
+      if ((v11 < 0) !== (v01 < 0)) edges.push([x + step * (1 - (-v11 / (v01 - v11))), y + step]);
+      if ((v01 < 0) !== (v00 < 0)) edges.push([x, y + step * (1 - (-v01 / (v00 - v01)))]);
+      if (edges.length >= 2) {
+        for (let k = 0; k < 2; k++) {
+          const ex = edges[k][0], ey = edges[k][1];
+          const ez = fn1.evaluate({ ...currentParams, x: ex, y: ey, t: animTime }, useDegrees);
+          pts.push(new THREE.Vector3(ex, ey, ez));
+        }
+      }
+    }
+  }
+  if (pts.length > 1) {
+    plotGroup.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xffffff })));
+    legendList.push({ color: '#ffffff', text: '3D Surface Intersection Curve' });
+  }
+}
+
+/* ============================================================================
+   11. DYNAMIC PARAMETER PLAYGROUND GENERATOR
+   ============================================================================ */
+let lastParamSignature = '';
+function syncParameterSliders(paramNames) {
+  const unique = Array.from(new Set(paramNames)).filter(p => !['x','y','z','t','u','v'].includes(p));
+  const sig = unique.join(',');
+  if (sig === lastParamSignature) return;
+  lastParamSignature = sig;
+
+  const container = document.getElementById('dynamic-sliders-container');
+  container.innerHTML = '';
+  if (unique.length === 0) {
+    container.innerHTML = '<div style="font-size:11.5px; color:var(--text-muted);">Add parameters like <code>a, b, c, A, ω, φ</code> to your expression (e.g. <code>y = a*x² + b</code>) to generate live sliders.</div>';
+    return;
+  }
+
+  unique.forEach(p => {
+    if (currentParams[p] === undefined) {
+      currentParams[p] = defaultParams[p] !== undefined ? defaultParams[p] : 1.0;
+    }
+    const row = document.createElement('div');
+    row.className = 'slider-row';
+    row.innerHTML = `
+      <div class="slider-header">
+        <span>Parameter <strong>${p}</strong></span>
+        <span class="val" id="val-param-${p}">${currentParams[p].toFixed(2)}</span>
+      </div>
+      <input type="range" min="-5" max="5" step="0.1" value="${currentParams[p]}" oninput="onDynamicParamInput('${p}', this.value)">
+    `;
+    container.appendChild(row);
+  });
+}
+
+function onDynamicParamInput(name, val) {
+  currentParams[name] = parseFloat(val);
+  const lbl = document.getElementById(`val-param-${name}`);
+  if (lbl) lbl.textContent = currentParams[name].toFixed(2);
+  evaluateAndPlot();
+}
+
+function resetParameters() {
+  Object.keys(currentParams).forEach(k => {
+    currentParams[k] = defaultParams[k] !== undefined ? defaultParams[k] : 1.0;
+  });
+  lastParamSignature = '';
+  evaluateAndPlot();
+}
+
+/* ============================================================================
+   12. 3D RAYCASTING PROBE (FOR 3D VIEW)
+   ============================================================================ */
+function onCanvas3DMouseMove(event) {
+  if (currentViewDim !== '3D') return;
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObjects(interactiveMeshes, false);
+  const probeBox = document.getElementById('probe-overlay');
+  clearGroup(probeGroup);
+
+  if (hits.length > 0) {
+    const hit = hits[0];
+    const p = hit.point;
+    const uData = hit.object.userData;
+
+    const marker = createCrispMarker3D(0x00d2ff, 0.08);
+    marker.position.copy(p);
+    probeGroup.add(marker);
+
+    if (uData && uData.type === 'surface' && uData.parsedFn) {
+      const h = 1e-4;
+      const fx = (uData.parsedFn.evaluate({ ...currentParams, x: p.x + h, y: p.y, t: animTime }, useDegrees) - uData.parsedFn.evaluate({ ...currentParams, x: p.x - h, y: p.y, t: animTime }, useDegrees)) / (2 * h);
+      const fy = (uData.parsedFn.evaluate({ ...currentParams, x: p.x, y: p.y + h, t: animTime }, useDegrees) - uData.parsedFn.evaluate({ ...currentParams, x: p.x, y: p.y - h, t: animTime }, useDegrees)) / (2 * h);
+      probeBox.textContent = `3D Probe (x, y, z) = (${p.x.toFixed(2)}, ${p.y.toFixed(2)}, ${p.z.toFixed(2)})  |  ∇z = (${isNaN(fx)?'0':fx.toFixed(2)}, ${isNaN(fy)?'0':fy.toFixed(2)})`;
+      if (document.getElementById('chk-probe-vec').checked && !isNaN(fx) && !isNaN(fy)) {
+        const normal = new THREE.Vector3(-fx, -fy, 1).normalize();
+        probeGroup.add(new THREE.ArrowHelper(normal, p, 1.3, 0x00d2ff, 0.24, 0.14));
+      }
+    } else {
+      probeBox.textContent = `3D Probe Coordinates (x, y, z) = (${p.x.toFixed(2)}, ${p.y.toFixed(2)}, ${p.z.toFixed(2)})`;
+    }
+  }
+}
+
+/* ============================================================================
+   13. UI HANDLERS, LIBRARY SEARCH, CAMERA VIEWS & ANIMATION LOOP
+   ============================================================================ */
+function setAppMode(mode) {
+  appMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(btn => btn.classList.remove('active'));
+  const activeBtn = document.getElementById(`tab-${mode}`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  document.getElementById('standard-input-panel').style.display = mode === 'parametric' ? 'none' : 'flex';
+  document.getElementById('parametric-input-panel').style.display = mode === 'parametric' ? 'flex' : 'none';
+
+  document.getElementById('ctx-function').style.display = mode === 'function' ? 'block' : 'none';
+  document.getElementById('ctx-calculus').style.display = mode === 'calculus' ? 'block' : 'none';
+  document.getElementById('ctx-integral').style.display = mode === 'integral' ? 'block' : 'none';
+  document.getElementById('ctx-parametric').style.display = mode === 'parametric' ? 'block' : 'none';
+
+  const titles = {
+    function: 'Cross-Sections & Slice Inspector',
+    implicit: 'Implicit Surface Controls',
+    parametric: 'Parametric Trajectory Controls',
+    calculus: 'Differential Calculus & ODE Controls',
+    integral: 'Integration & Accumulation Limits',
+    roots: 'Roots, Contours & Extrema Finder'
+  };
+  document.getElementById('contextual-title').textContent = titles[mode] || 'Mode Controls';
+
+  const curEq = document.getElementById('eq-main').value;
+  if (mode === 'implicit' && !curEq.includes('=')) {
+    document.getElementById('eq-main').value = 'x² + y² + z² = 25';
+  }
+  evaluateAndPlot();
+}
+
+function renderLibrary() {
+  const query = document.getElementById('lib-search').value.toLowerCase();
+  const cat = document.getElementById('lib-category').value;
+  const listEl = document.getElementById('lib-list');
+  listEl.innerHTML = '';
+
+  const filtered = FUNCTION_LIBRARY.filter(item => {
+    const matchCat = (cat === 'ALL' || item.cat === cat);
+    const matchQ = item.name.toLowerCase().includes(query) || item.eq.toLowerCase().includes(query) || item.desc.toLowerCase().includes(query);
+    return matchCat && matchQ;
+  });
+
+  filtered.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'lib-item';
+    const displayEq = item.eq.startsWith('PARAM_') ? item.eq.split(':')[0] : item.eq;
+    div.innerHTML = `<span>[${item.cat}] ${item.name}</span><code>${displayEq}</code>`;
+    div.onclick = () => loadLibraryItem(item);
+    listEl.appendChild(div);
+  });
+}
+
+function loadLibraryItem(item) {
+  if (item.eq.startsWith('PARAM_CURVE:')) {
+    const parts = item.eq.replace('PARAM_CURVE:', '').split('|');
+    document.getElementById('param-subtype').value = 'curve';
+    document.getElementById('param-v-bounds').style.display = 'none';
+    document.getElementById('param-x').value = parts[0];
+    document.getElementById('param-y').value = parts[1];
+    document.getElementById('param-z').value = parts[2];
+    setAppMode('parametric');
+    return;
+  }
+  if (item.eq.startsWith('PARAM_SURF:')) {
+    const parts = item.eq.replace('PARAM_SURF:', '').split('|');
+    document.getElementById('param-subtype').value = 'surface';
+    document.getElementById('param-v-bounds').style.display = 'grid';
+    document.getElementById('param-x').value = parts[0];
+    document.getElementById('param-y').value = parts[1];
+    document.getElementById('param-z').value = parts[2];
+    setAppMode('parametric');
+    return;
+  }
+  document.getElementById('eq-main').value = item.eq;
+  if (item.eq.startsWith('dy/dx')) {
+    document.getElementById('calc-submode').value = 'ode1';
+    setAppMode('calculus');
+  } else {
+    setAppMode(item.mode);
+  }
+  updateExplanation(item.name, item.desc, `Category ${item.cat} Preset | Equation: ${item.eq}`);
+}
+
+function onParamSubtypeChange() {
+  const sub = document.getElementById('param-subtype').value;
+  document.getElementById('param-v-bounds').style.display = sub === 'surface' ? 'grid' : 'none';
+  if (sub === 'surface') {
+    document.getElementById('param-x').value = '(3 + cos(v))*cos(u)';
+    document.getElementById('param-y').value = '(3 + cos(v))*sin(u)';
+    document.getElementById('param-z').value = 'sin(v)';
+  } else {
+    document.getElementById('param-x').value = 'cos(t)';
+    document.getElementById('param-y').value = 'sin(t)';
+    document.getElementById('param-z').value = 't / 3';
+  }
+  evaluateAndPlot();
+}
+
+let debounceTimer = null;
+function onEquationInputChange() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => evaluateAndPlot(), 200);
+}
+
+function insertSymbol(sym) {
+  const input = document.getElementById('eq-main');
+  const start = input.selectionStart || input.value.length;
+  const end = input.selectionEnd || input.value.length;
+  input.value = input.value.substring(0, start) + sym + input.value.substring(end);
+  input.focus();
+  onEquationInputChange();
+}
+
+function toggleComparisonInput() {
+  const on = document.getElementById('chk-compare').checked;
+  document.getElementById('compare-input-row').style.display = on ? 'flex' : 'none';
+  evaluateAndPlot();
+}
+
+function togglePiecewisePanel() {
+  const on = document.getElementById('chk-piecewise').checked;
+  document.getElementById('piecewise-panel').style.display = on ? 'block' : 'none';
+  if (on) updatePiecewiseEquation();
+}
+
+function updatePiecewiseEquation() {
+  const e1 = document.getElementById('pw-expr1').value || 'x^2';
+  const e2 = document.getElementById('pw-expr2').value || 'sin(x)';
+  const split = parseFloat(document.getElementById('pw-split').value) || 0;
+  document.getElementById('eq-main').value = `y = pw(x - (${split}), ${e1}, ${e2})`;
+  evaluateAndPlot();
+}
+
+function onSliceChange() {
+  document.getElementById('lbl-slice-x').textContent = parseFloat(document.getElementById('rng-slice-x').value).toFixed(1);
+  document.getElementById('lbl-slice-y').textContent = parseFloat(document.getElementById('rng-slice-y').value).toFixed(1);
+  evaluateAndPlot();
+}
+
+function onCalcSubmodeChange() {
+  const sub = document.getElementById('calc-submode').value;
+  if (sub === 'ode1') {
+    document.getElementById('eq-main').value = 'dy/dx = x - y';
+  } else if (sub === 'ode2') {
+    document.getElementById('eq-main').value = 'd²y/dx² + ω²y = 0';
+  } else if (sub === 'deriv1d') {
+    document.getElementById('eq-main').value = 'f(x) = x³ - 3x';
+  } else if (sub === 'partial2d') {
+    document.getElementById('eq-main').value = 'z = x² - y²';
+  }
+  evaluateAndPlot();
+}
+
+function onCalcPointChange() {
+  document.getElementById('lbl-calc-x').textContent = parseFloat(document.getElementById('rng-calc-x').value).toFixed(2);
+  document.getElementById('lbl-calc-y').textContent = parseFloat(document.getElementById('rng-calc-y').value).toFixed(2);
+  evaluateAndPlot();
+}
+
+function onIntegralChange() {
+  document.getElementById('lbl-int-a').textContent = parseFloat(document.getElementById('rng-int-a').value).toFixed(1);
+  document.getElementById('lbl-int-b').textContent = parseFloat(document.getElementById('rng-int-b').value).toFixed(1);
+  document.getElementById('lbl-int-c').textContent = parseFloat(document.getElementById('rng-int-c').value).toFixed(1);
+  evaluateAndPlot();
+}
+
+function onParamT0Change() {
+  document.getElementById('lbl-param-t0').textContent = parseFloat(document.getElementById('rng-param-t0').value).toFixed(2);
+  evaluateAndPlot();
+}
+
+function updateMaterialOpacity() {
+  const op = parseFloat(document.getElementById('ctrl-opacity').value);
+  document.getElementById('lbl-opacity').textContent = op.toFixed(2);
+  interactiveMeshes.forEach(m => {
+    if (m.material && m.material.isMeshPhongMaterial) {
+      m.material.transparent = op < 0.99;
+      m.material.opacity = op;
+      m.material.needsUpdate = true;
+    }
+  });
+}
+
+function toggleAxesGrid() {
+  const L = parseFloat(document.getElementById('ctrl-domain').value) || 8;
+  buildCoordinateAxes3D(L);
+  render2DInfiniteScene();
+}
+
+function toggleAngleUnit() {
+  useDegrees = !useDegrees;
+  const btn = document.getElementById('btn-deg-rad');
+  btn.textContent = useDegrees ? 'Unit: DEG' : 'Unit: RAD';
+  btn.classList.toggle('active-toggle', useDegrees);
+  evaluateAndPlot();
+}
+
+function setCameraView(preset) {
+  const L = Math.max(2, parseFloat(document.getElementById('ctrl-domain').value) || 8);
+  setDimensionView('3D', true);
+  controls.target.set(0, 0, 0);
+  if (preset === 'top') camera.position.set(0, -0.01, L * 2.2);
+  else if (preset === 'front') camera.position.set(0, -L * 2.2, 0);
+  else if (preset === 'side') camera.position.set(L * 2.2, 0, 0);
+  else camera.position.set(L * 1.65, -L * 1.65, L * 1.15);
+  controls.update();
+}
+
+function toggleFullScreen() {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+}
+
+function renderLegend(items) {
+  const el = document.getElementById('legend-items');
+  el.innerHTML = items.map(it => `
+    <div class="legend-item">
+      <span class="legend-swatch" style="background:${it.color};"></span>
+      <span>${it.text}</span>
+    </div>
+  `).join('');
+}
+
+function updateExplanation(title, body, stats) {
+  document.getElementById('exp-title').textContent = title;
+  document.getElementById('exp-body').textContent = body;
+  document.getElementById('exp-stats').textContent = stats;
+}
+
+function toggleGuidedMode() {
+  const card = document.getElementById('guided-card');
+  const btn = document.getElementById('btn-guided');
+  const showing = card.style.display === 'block';
+  card.style.display = showing ? 'none' : 'block';
+  btn.classList.toggle('active-toggle', !showing);
+  if (!showing) loadGuidedLesson(0);
+}
+
+function loadGuidedLesson(idx) {
+  const lesson = GUIDED_LESSONS[idx];
+  document.getElementById('guided-level-badge').textContent = lesson.level;
+  document.getElementById('guided-question').textContent = lesson.question;
+  const ans = document.getElementById('guided-answer');
+  ans.style.display = 'none';
+  ans.textContent = lesson.answer;
+  document.getElementById('eq-main').value = lesson.eq;
+  setAppMode(lesson.mode);
+}
+
+function revealGuidedAnswer() {
+  document.getElementById('guided-answer').style.display = 'block';
+}
+
+function togglePlayAnimation() {
+  animPlaying = !animPlaying;
+  const btn = document.getElementById('btn-play');
+  btn.textContent = animPlaying ? '⏸ Pause' : '▶ Play t';
+  btn.classList.toggle('active-toggle', animPlaying);
+}
+
+function stepTime(dt) {
+  animTime += dt;
+  document.getElementById('lbl-time').textContent = `t = ${animTime.toFixed(2)}`;
+  evaluateAndPlot();
+}
+
+function resetTime() {
+  animTime = 0;
+  document.getElementById('lbl-time').textContent = 't = 0.00';
+  evaluateAndPlot();
+}
+
+let lastFrameTime = performance.now();
+function animateLoop(now = performance.now()) {
+  requestAnimationFrame(animateLoop);
+  const dt = (now - lastFrameTime) / 1000;
+  lastFrameTime = now;
+
+  if (animPlaying) {
+    const speed = parseFloat(document.getElementById('rng-speed').value) || 1.0;
+    animTime += dt * speed;
+    document.getElementById('lbl-time').textContent = `t = ${animTime.toFixed(2)}`;
+    evaluateAndPlot();
+  }
+
+  if (currentViewDim === '3D') {
+    controls.update();
+    renderer.render(scene, camera);
+  }
+}
+
+window.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
